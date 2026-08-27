@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEditor;
 
 namespace Holylib.ItemEditor
 {
@@ -8,8 +9,19 @@ namespace Holylib.ItemEditor
     {
         public static List<StaticItemData> GetAListOfItems()
         {
-            var itemsInAssets = Resources.FindObjectsOfTypeAll(typeof(StaticItemData)) as StaticItemData[];
-            var originalList = itemsInAssets.ToList();
+            var guids = AssetDatabase.FindAssets("t:StaticItemData");
+            var originalList = new List<StaticItemData>();
+
+            foreach (var guid in guids)
+            {
+                var path = AssetDatabase.GUIDToAssetPath(guid);
+                var item = AssetDatabase.LoadAssetAtPath<StaticItemData>(path);
+                if (item != null)
+                {
+                    originalList.Add(item);
+                }
+            }
+
             return originalList;
         }
 

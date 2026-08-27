@@ -17,12 +17,12 @@
     {
       "displayName": "Basic Item Editor",
       "description": "Code for a simple working ui",
-      "path": "Packages/Samples~/PublicScripts"
+      "path": "Samples~/PublicScripts"
     },
     {
       "displayName": "Example items",
       "description": "Contains some example items with sprites",
-      "path": "Packages/Samples~/ExampleItems"
+      "path": "Samples~/ExampleItems"
     }
   ]
 }

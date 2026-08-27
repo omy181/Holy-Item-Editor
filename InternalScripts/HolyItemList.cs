@@ -87,6 +87,12 @@ namespace Holylib.ItemEditor
                 _listView.selectedIndex = items.Count > 0 ? 0 : -1;
             }
         }
+
+        public ItemListElement GetItemListElementByID(string id)
+        {
+            var items = _getList();
+            return items.Find(i => i.ID == id);
+        }
     }
 
     public class ItemListElement

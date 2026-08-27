@@ -1,7 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEditor;
+using UnityEditor.Callbacks;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -12,6 +10,7 @@ namespace Holylib.ItemEditor
         [SerializeField]
         private VisualTreeAsset m_VisualTreeAsset = default;
         private HolyItemList _listView;
+        private HolyItemProperties _itemProperties;
 
         [MenuItem("Tools/Holylib/HolyItemEditor")]
         public static void OpenWindow()
@@ -25,7 +24,7 @@ namespace Holylib.ItemEditor
             VisualElement root = rootVisualElement;
             root.Add(m_VisualTreeAsset.Instantiate());
 
-            HolyItemProperties itemProperties = new(
+            _itemProperties = new(
                 root.Q<VisualElement>("PropertiesContent"),
                 root.Q<Image>("ItemImage"),
                 root.Q<Label>("ItemName"),
@@ -42,8 +41,8 @@ namespace Holylib.ItemEditor
             _listView = new(
                 root.Q<ListView>("ItemListView"),
                 searchEngine.GetSearchReults,
-                (item)=> _previewItem(itemProperties,item)
-                ,root.Q<Button>("NewItem"),
+                _previewItem,
+                root.Q<Button>("NewItem"),
                 ItemCreation.CreateItem,
                 ItemCreation.IsValidNameForNewItem,
                 ItemCreation.DeleteItem);
@@ -54,17 +53,32 @@ namespace Holylib.ItemEditor
         {
             _listView.RefreshList(id);
         }
-        private void _previewItem(HolyItemProperties itemProperties, ItemListElement item)
+        private void _previewItem(ItemListElement item)
         {
             if(item != null)
             {
-                itemProperties.PreviewItem(new SerializedObject(ItemManagement.ListElementToItemData(item)), item);  
+                _itemProperties.PreviewItem(new SerializedObject(ItemManagement.ListElementToItemData(item)), item);  
             }
             else
             {
-                itemProperties.PreviewItem();
+                _itemProperties.PreviewItem();
             }
             
+        }
+
+        [OnOpenAsset]
+        private static bool _onOpenAsset(EntityId id, int line)
+        {
+            var obj = EditorUtility.EntityIdToObject(id);
+            if (obj is StaticItemData item)
+            {
+                var wnd = GetWindow<HolyItemEditor>();
+                wnd.Focus();
+                wnd._previewItem(wnd._listView.GetItemListElementByID(item.ID));
+                return true;
+            }
+
+            return false; // not our asset
         }
     }
 }

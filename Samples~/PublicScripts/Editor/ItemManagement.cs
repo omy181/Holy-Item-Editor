@@ -7,22 +7,13 @@ namespace Holylib.ItemEditor
 {
     public static class ItemManagement
     {
+        private static readonly string[] SearchFolders = { "Assets" };
+
+        private static List<StaticItemData> _itemCache = new();
+
         public static List<StaticItemData> GetAListOfItems()
         {
-            var guids = AssetDatabase.FindAssets("t:StaticItemData");
-            var originalList = new List<StaticItemData>();
-
-            foreach (var guid in guids)
-            {
-                var path = AssetDatabase.GUIDToAssetPath(guid);
-                var item = AssetDatabase.LoadAssetAtPath<StaticItemData>(path);
-                if (item != null)
-                {
-                    originalList.Add(item);
-                }
-            }
-
-            return originalList;
+            return _itemCache;
         }
 
         public static List<ItemListElement> GetItemsAsListElements(List<StaticItemData> originalList)
@@ -44,6 +35,24 @@ namespace Holylib.ItemEditor
         public static StaticItemData ListElementToItemData(ItemListElement listElement)
         {
             return GetAListOfItems().Find(i => i.ID == listElement.ID);
+        }
+
+        public static void RefreshItemsCache()
+        {
+            var guids = AssetDatabase.FindAssets("t:StaticItemData", SearchFolders);
+            var originalList = new List<StaticItemData>();
+
+            foreach (var guid in guids)
+            {
+                var path = AssetDatabase.GUIDToAssetPath(guid);
+                var item = AssetDatabase.LoadAssetAtPath<StaticItemData>(path);
+                if (item != null)
+                {
+                    originalList.Add(item);
+                }
+            }
+
+            _itemCache = originalList;
         }
     }
 }

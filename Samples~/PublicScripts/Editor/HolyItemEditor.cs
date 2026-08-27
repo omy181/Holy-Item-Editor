@@ -26,6 +26,8 @@ namespace Holylib.ItemEditor
             VisualElement root = rootVisualElement;
             root.Add(visualTree.Instantiate());
 
+            ItemManagement.RefreshItemsCache();
+
             _itemProperties = new(
                 root.Q<VisualElement>("PropertiesContent"),
                 root.Q<Image>("ItemImage"),

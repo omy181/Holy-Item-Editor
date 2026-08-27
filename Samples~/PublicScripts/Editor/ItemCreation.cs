@@ -22,6 +22,8 @@ namespace Holylib.ItemEditor
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
 
+            ItemManagement.RefreshItemsCache();
+
             refreshList(id);
         }
 
@@ -44,6 +46,8 @@ namespace Holylib.ItemEditor
                 AssetDatabase.DeleteAsset(path);
                 AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh();
+
+                ItemManagement.RefreshItemsCache();
 
                 Debug.Log($"{id} deleted");
             }

@@ -8,7 +8,6 @@ namespace Holylib.ItemEditor
     public class HolyItemEditor : EditorWindow
     {
         [SerializeField]
-        private VisualTreeAsset m_VisualTreeAsset = default;
         private HolyItemList _listView;
         private HolyItemProperties _itemProperties;
 
@@ -21,8 +20,11 @@ namespace Holylib.ItemEditor
 
         public void CreateGUI()
         {
+            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(
+            "Packages/dev.holyperson.holyitemeditor/InternalScripts/Editor/HolyItemEditor.uxml");
+
             VisualElement root = rootVisualElement;
-            root.Add(m_VisualTreeAsset.Instantiate());
+            root.Add(visualTree.Instantiate());
 
             _itemProperties = new(
                 root.Q<VisualElement>("PropertiesContent"),

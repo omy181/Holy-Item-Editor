@@ -1,5 +1,5 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <Style src="project://database/Assets/HolyItemEditor/InternalScripts/HolyItemEditor.uss?fileID=7433441132597879392&amp;guid=9d89c496c391cb446ada407883c917af&amp;type=3#HolyItemEditor"/>
+    <Style src="HolyItemEditor.uss"/>
     <ui:VisualElement name="Root" class="upper-panel" style="flex-grow: 1; flex-shrink: 0;">
         <ui:VisualElement name="Panels" style="flex-grow: 1; flex-direction: row; flex-shrink: 0;">
             <ui:VisualElement name="List" class="upper-panel" style="flex-grow: 1; padding-top: 6px; padding-right: 6px; padding-bottom: 6px; padding-left: 6px; flex-basis: auto; flex-shrink: 0; aspect-ratio: auto; max-width: 250px; width: auto; min-width: 250px;">

@@ -1,0 +1,24 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/HolyItemEditor/InternalScripts/HolyItemEditor.uss?fileID=7433441132597879392&amp;guid=9d89c496c391cb446ada407883c917af&amp;type=3#HolyItemEditor"/>
+    <ui:VisualElement name="Root" class="upper-panel" style="flex-grow: 1; flex-shrink: 0;">
+        <ui:VisualElement name="Panels" style="flex-grow: 1; flex-direction: row; flex-shrink: 0;">
+            <ui:VisualElement name="List" class="upper-panel" style="flex-grow: 1; padding-top: 6px; padding-right: 6px; padding-bottom: 6px; padding-left: 6px; flex-basis: auto; flex-shrink: 0; aspect-ratio: auto; max-width: 250px; width: auto; min-width: 250px;">
+                <ui:VisualElement name="TopPanel" class="upper-panel" style="flex-grow: 0; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-right: 0; padding-bottom: 6px; padding-left: 0; flex-shrink: 0;">
+                    <ui:VisualElement name="SearchPanel" style="flex-grow: 0; flex-direction: row; flex-shrink: 1; align-content: auto; align-self: stretch; justify-content: flex-start; align-items: auto; width: auto; height: auto; flex-wrap: nowrap;">
+                        <ui:TextField label="" placeholder-text="Search" name="SearchField" style="flex-grow: 1;"/>
+                        <ui:Button text="?" name="SearchGuide" style="flex-grow: 0; align-self: center; aspect-ratio: 1; height: auto; flex-shrink: 1; justify-content: flex-start; align-items: auto; align-content: stretch;"/>
+                    </ui:VisualElement>
+                    <ui:Button text="Create New Item" name="NewItem"/>
+                </ui:VisualElement>
+                <ui:ListView name="ItemListView" class="propery-panel" style="flex-grow: 1;"/>
+            </ui:VisualElement>
+            <ui:VisualElement name="Properties" style="flex-grow: 1; flex-shrink: 0; padding-top: 6px; padding-right: 6px; padding-bottom: 6px; padding-left: 6px; justify-content: flex-start; align-self: auto; align-content: auto; align-items: stretch; flex-direction: column;">
+                <ui:VisualElement name="SelectedDetails" class="upper-panel" style="flex-grow: 1; flex-direction: row; max-height: 40px; align-content: stretch; align-self: flex-start; justify-content: flex-start; flex-shrink: 1; align-items: center; aspect-ratio: auto; margin-top: 7px; margin-right: 7px; margin-bottom: 7px; margin-left: 7px; flex-wrap: nowrap;">
+                    <ui:Image source="project://database/Resources/unity_builtin_extra?fileID=10907&amp;guid=0000000000000000f000000000000000&amp;type=0#Background" name="ItemImage" scale-mode="ScaleToFit" style="flex-grow: 0; flex-basis: auto; height: auto; width: auto; aspect-ratio: 1; flex-shrink: 1; max-height: 50px; align-self: auto; justify-content: flex-start; align-items: stretch; align-content: flex-start; flex-direction: column; flex-wrap: nowrap; min-width: 43px;"/>
+                    <ui:Label text="Selected Item Name" name="ItemName" style="flex-grow: 1; padding-left: 6px; flex-shrink: 0; font-size: 18px; white-space: pre-wrap;"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="PropertiesContent" class="propery-panel" style="flex-grow: 1; background-color: rgb(43, 43, 43); flex-shrink: 0;"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

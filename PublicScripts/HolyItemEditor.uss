@@ -1,0 +1,12 @@
+.custom-label {
+    font-size: 20px;
+    -unity-font-style: bold;
+    color: rgb(68, 138, 255);
+}
+
+.propery-panel {
+}
+
+.upper-panel {
+    background-color: rgb(56, 56, 56);
+}

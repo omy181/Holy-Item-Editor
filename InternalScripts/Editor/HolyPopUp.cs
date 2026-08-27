@@ -173,3 +173,4 @@ namespace Holylib.ItemEditor
         private void OnLostFocus() => Close();
     }
 }
+#endif

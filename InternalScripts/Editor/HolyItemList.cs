@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using System;

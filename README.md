@@ -4,9 +4,9 @@
 
 <img width="897" height="601" alt="Unity_HqQi2xK8UU" src="https://github.com/user-attachments/assets/d989d651-d7b8-45a0-954b-df84c735bb81" />
 
-In games which uses many scriptable object items; it gets really tedious to find and edit items using project window.
+When games use many ScriptableObject items, it can get really tedious to find and edit items through project window.
 
-For this purpose i made my own tool but it was hard to implement it into other projects so i made a clean base version which is easily extendable for your specific needs.
+For this purpose, I creted my own tool, but it was hard to implement it into other projects, so i made a clean base version which is easily extendable for your specific needs.
 
 
 ### How To Implement

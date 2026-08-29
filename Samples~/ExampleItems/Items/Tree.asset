@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Holylib.ItemEditor.StaticItemData
   _id: tree
   _name: Tree
-  _sprite: {fileID: -732443658, guid: 1da508e4ffdd45c458d99ecc76193146, type: 3}
+  _icon: {fileID: -732443658, guid: 1da508e4ffdd45c458d99ecc76193146, type: 3}
   _isInGame: 1

@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StaticItemData
   _id: log
   _name: Log
-  _sprite: {fileID: -1166972223, guid: 1da508e4ffdd45c458d99ecc76193146, type: 3}
+  _icon: {fileID: -1166972223, guid: 1da508e4ffdd45c458d99ecc76193146, type: 3}
   _isInGame: 0

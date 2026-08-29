@@ -158,7 +158,7 @@ namespace Holylib.ItemEditor
         public abstract Sprite Icon { get; }
         public abstract void InitializeValues(string id, string name);
         public abstract ElementPreviewData PreviewElement();
-        public abstract bool DoesFitSearchQuerry(string querry);
+        public abstract bool CustomSearchLogic(string querry);
     }
 
     public struct ElementPreviewData

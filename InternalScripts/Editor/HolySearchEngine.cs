@@ -74,7 +74,7 @@ namespace Holylib.ItemEditor
                 {
                     condition = (Item) =>
                     {
-                        return Item.DoesFitSearchQuerry(sectionText) || Item.ID.ToLower().Contains(sectionText) || Item.Name.ToLower().Contains(sectionText);
+                        return Item.CustomSearchLogic(sectionText) || Item.ID.ToLower().Contains(sectionText) || Item.Name.ToLower().Contains(sectionText);
                     };
                 }
                 

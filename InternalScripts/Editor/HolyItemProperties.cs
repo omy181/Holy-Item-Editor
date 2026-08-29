@@ -22,19 +22,19 @@ namespace Holylib.ItemEditor
             PreviewItem();
         }
 
-        public void PreviewItem(SerializedObject serializedObject, ItemListElement itemListElement)
+        public void PreviewItem(ItemListElement itemListElement)
         {
-            var container = new InspectorElement(serializedObject);
+            ElementPreviewData elementPreviewData = itemListElement.PreviewElement();
 
             _containerParent.Clear();
-            _containerParent.Add(container);
+            _containerParent.Add(elementPreviewData.PropertyInspector);
 
             _itemImage.sprite = itemListElement.Icon;
             _itemLabel.text = itemListElement.Name;
 
             var saveButton = new Button();
             saveButton.text = "Save Changes";
-            saveButton.RegisterCallback<MouseUpEvent>((e) => _saveChanges(serializedObject, itemListElement));
+            saveButton.RegisterCallback<MouseUpEvent>((e) => _saveChanges(elementPreviewData.SerializeObjectsToSave, itemListElement));
             _containerParent.Add(saveButton);
         }
 
@@ -45,10 +45,14 @@ namespace Holylib.ItemEditor
             _itemLabel.text = "No item selected";
         }
 
-        private void _saveChanges(SerializedObject serializedObject, ItemListElement itemListElement)
+        private void _saveChanges(SerializedObject[] serializedObjects, ItemListElement itemListElement)
         {
-            serializedObject.ApplyModifiedProperties();
-            EditorUtility.SetDirty(serializedObject.targetObject);
+            foreach (var serializedObject in serializedObjects)
+            {
+                serializedObject.ApplyModifiedProperties();
+                EditorUtility.SetDirty(serializedObject.targetObject);
+            }
+            
             AssetDatabase.SaveAssets();
 
             _refreshList(itemListElement.ID);

@@ -8,7 +8,7 @@
                         <ui:TextField label="" placeholder-text="Search" name="SearchField" style="flex-grow: 1;"/>
                         <ui:Button text="?" name="SearchGuide" style="flex-grow: 0; align-self: center; aspect-ratio: 1; height: auto; flex-shrink: 1; justify-content: flex-start; align-items: auto; align-content: stretch;"/>
                     </ui:VisualElement>
-                    <ui:Button text="Create New Item" name="NewItem"/>
+                    <ui:VisualElement name="NewItemButtonContainer" style="flex-grow: 0;"/>
                 </ui:VisualElement>
                 <ui:ListView name="ItemListView" class="propery-panel" style="flex-grow: 1;"/>
             </ui:VisualElement>

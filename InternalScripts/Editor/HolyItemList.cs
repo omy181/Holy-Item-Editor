@@ -1,10 +1,8 @@
 #if UNITY_EDITOR
-using NUnit.Framework;
-using NUnit.Framework.Interfaces;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -13,14 +11,27 @@ namespace Holylib.ItemEditor
     public class HolyItemList
     {
         private ListView _listView;
-        private Func<List<ItemListElement>> _getList;
-        public HolyItemList(ListView listView,Func<List<ItemListElement>> getList,Action<ItemListElement> onItemSelected,Button createNewButton,Action<string,Action<string>> onItemCreated,Func<string,bool> isValidNameForItem,Action<string, Action> deleteItem)
+        private Func<List<ItemListElement>> _getListOfSearched;
+        private Func<List<ItemListElement>> _getListOfAllItems;
+        private Action _refreshItemsCache;
+        public HolyItemList(ListView listView,
+            Func<List<ItemListElement>> getListOfSearched,
+            Action<ItemListElement> onItemSelected,
+            VisualElement createNewButtonContainer,
+            Action<Type, string, Action<string>,string> onItemCreated,
+            Func<Type,string, Func<List<ItemListElement>>, bool> isValidNameForItem,
+            Action<string, Action, Func<List<ItemListElement>>> deleteItem, 
+            ItemListElementAndPath[] supportedItemListTypes,
+            Action refreshItemsCache,
+            Func<List<ItemListElement>> getListOfAll)
         {
             _listView = listView;
-            _getList = getList;
+            _getListOfSearched = getListOfSearched;
+            _refreshItemsCache = refreshItemsCache;
+            _getListOfAllItems = getListOfAll;
 
-            listView.itemsSource = _getList();
-            
+            listView.itemsSource = _getListOfSearched();
+
             listView.makeItem = () =>
             {
                 var listItem = new VisualElement();
@@ -43,7 +54,7 @@ namespace Holylib.ItemEditor
                     var screenPos = GUIUtility.GUIToScreenPoint(evt.mousePosition);
                     evt.menu.AppendAction(
                         "Delete Item",
-                        (x) => DeleteItemPopup.Show(currentItem.Name, screenPos, () => deleteItem(currentItem.ID,()=> RefreshList())),
+                        (x) => DeleteItemPopup.Show(currentItem.Name, screenPos, () => deleteItem(currentItem.ID,()=> _refreshItemsCacheAndList(),_getListOfAllItems)),
                         DropdownMenuAction.AlwaysEnabled
                     );
                 }));
@@ -54,7 +65,7 @@ namespace Holylib.ItemEditor
 
             listView.bindItem = (element, index) =>
             {
-                var list = _getList();
+                var list = _getListOfSearched();
                 var itemData = list[index];
                 element.Q<Image>().sprite = itemData.Icon;
                 element.Q<Label>().text = itemData.Name;
@@ -67,12 +78,31 @@ namespace Holylib.ItemEditor
                 onItemSelected(item.Count() > 0 ? item.First() as ItemListElement : null);
             };
 
-            createNewButton.RegisterCallback<MouseUpEvent>((a)=> CreateItemPopup.Show((id)=>onItemCreated(id, RefreshList), isValidNameForItem));
+
+            createNewButtonContainer.Clear();
+            foreach (var type in supportedItemListTypes)
+            {
+                var nButton = new Button();
+                nButton.text = $"Create New {type.Type.Name}";
+                nButton.RegisterCallback<MouseUpEvent>((a) =>
+                CreateItemPopup.Show(
+                    (id) => onItemCreated(type.Type,id, _refreshItemsCacheAndList, type.SavePath),
+                    (name)=>isValidNameForItem(type.Type,name, _getListOfAllItems)));
+
+                createNewButtonContainer.Add(nButton);
+            }
+
+            
         }
 
+        private void _refreshItemsCacheAndList(string id = "")
+        {
+            _refreshItemsCache();
+            RefreshList(id);
+        }
         public void RefreshList(string id = "")
         {
-            var items = _getList();
+            var items = _getListOfSearched();
             _listView.itemsSource = items;
             _listView.RefreshItems();
             var index = string.IsNullOrEmpty(id) ? -1 : items.IndexOf(items.Find(i => i.ID == id));
@@ -91,22 +121,42 @@ namespace Holylib.ItemEditor
 
         public ItemListElement GetItemListElementByID(string id)
         {
-            var items = _getList();
+            var items = _getListOfSearched();
             return items.Find(i => i.ID == id);
         }
     }
 
-    public class ItemListElement
+    public abstract class ItemListElement : ScriptableObject
     {
-        public string ID;
-        public string Name;
-        public Sprite Icon;
+        public abstract string ID { get; }
+        public abstract string Name { get; }
+        public abstract Sprite Icon { get; }
+        public abstract void InitializeValues(string id, string name);
+        public abstract ElementPreviewData PreviewElement();
+        public abstract bool DoesFitSearchQuerry(string querry);
+    }
 
-        public ItemListElement(string iD, string name, Sprite icon)
+    public struct ElementPreviewData
+    {
+        public VisualElement PropertyInspector;
+        public SerializedObject[] SerializeObjectsToSave;
+
+        public ElementPreviewData(VisualElement propertyInspector, SerializedObject[] serializeObjectsToSave)
         {
-            ID = iD;
-            Name = name;
-            Icon = icon;
+            PropertyInspector = propertyInspector;
+            SerializeObjectsToSave = serializeObjectsToSave;
+        }
+    }
+
+    public struct ItemListElementAndPath
+    {
+        public Type Type;
+        public string SavePath;
+
+        public ItemListElementAndPath(Type type, string savePath)
+        {
+            Type = type;
+            SavePath = savePath;
         }
     }
 }

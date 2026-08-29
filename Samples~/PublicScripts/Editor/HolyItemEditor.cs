@@ -1,4 +1,5 @@
 #if UNITY_EDITOR
+using System.Linq;
 using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEngine;
@@ -27,7 +28,7 @@ namespace Holylib.ItemEditor
             VisualElement root = rootVisualElement;
             root.Add(visualTree.Instantiate());
 
-            ItemManagement.RefreshItemsCache();
+            ItemManagementReferences.RefreshItemsCache();
 
             _itemProperties = new(
                 root.Q<VisualElement>("PropertiesContent"),
@@ -36,22 +37,35 @@ namespace Holylib.ItemEditor
                 _refresh);
 
             HolySearchEngine searchEngine = new(
-                ItemManagement.GetAllListElements,
+                ItemManagementReferences.GetAListOfAllItems,
                 root.Q<TextField>("SearchField"),
                 _refresh,
                 root.Q<Button>("SearchGuide"),
-                SearchFeatures.GetListElements,
-                SearchFeatures.GetSearchGuide());
+                _getSearchGuide());
 
             _listView = new(
                 root.Q<ListView>("ItemListView"),
                 searchEngine.GetSearchReults,
                 _previewItem,
-                root.Q<Button>("NewItem"),
+                root.Q<VisualElement>("NewItemButtonContainer"),
                 ItemCreation.CreateItem,
                 ItemCreation.IsValidNameForNewItem,
-                ItemCreation.DeleteItem);
+                ItemCreation.DeleteItem,
+                ItemManagementReferences.SupportedItemListTypes,
+                ItemManagementReferences.RefreshItemsCache,
+                ItemManagementReferences.GetAListOfAllItems);
 
+        }
+
+        private string _getSearchGuide()
+        {
+            string searchGuide =
+                "<b><size=120%><color=#FFD700>Search Guide</color></size></b>\n\n" +
+                "<b><color=#E57373>/ - Type</color></b>\n" +
+                "<color=#B0BEC5>   /StaticItemData  /RecipeData ...</color>\n" +
+                "<b><color=#E57373>! - Negation</color></b>\n" +
+                "<color=#B0BEC5>   !stone  !/RecipeData ...</color>";
+            return searchGuide;
         }
 
         private void _refresh(string id)
@@ -62,7 +76,7 @@ namespace Holylib.ItemEditor
         {
             if(item != null)
             {
-                _itemProperties.PreviewItem(new SerializedObject(ItemManagement.ListElementToItemData(item)), item);  
+                _itemProperties.PreviewItem(item);  
             }
             else
             {
@@ -75,12 +89,17 @@ namespace Holylib.ItemEditor
         private static bool _onOpenAsset(EntityId id, int line)
         {
             var obj = EditorUtility.EntityIdToObject(id);
-            if (obj is StaticItemData item)
+            foreach (var typeData in ItemManagementReferences.SupportedItemListTypes)
             {
-                var wnd = GetWindow<HolyItemEditor>();
-                wnd.Focus();
-                wnd._previewItem(wnd._listView.GetItemListElementByID(item.ID));
-                return true;
+                if (typeData.Type.IsInstanceOfType(obj))
+                {
+                    var item = (ItemListElement)obj;
+
+                    var wnd = GetWindow<HolyItemEditor>();
+                    wnd.Focus();
+                    wnd._previewItem(wnd._listView.GetItemListElementByID(item.ID));
+                    return true;
+                }
             }
 
             return false; // not our asset

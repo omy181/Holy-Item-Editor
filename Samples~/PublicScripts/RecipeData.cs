@@ -4,12 +4,13 @@ using UnityEditor.UIElements;
 #endif
 
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Holylib.ItemEditor
 {
 
-    [CreateAssetMenu(fileName = "StaticItemData", menuName = "Holylib/StaticItemData")]
-    public class StaticItemData : ItemListElement
+    [CreateAssetMenu(fileName = "RecipeData", menuName = "Holylib/RecipeData")]
+    public class RecipeData : ItemListElement
     {
         [SerializeField] private string _id;
         public override string ID => _id;
@@ -17,14 +18,13 @@ namespace Holylib.ItemEditor
         public override string Name => _name;
         [SerializeField] private Sprite _icon;
         public override Sprite Icon => _icon;
-        [SerializeField] private bool _isInGame;
-        public bool IsIngame => _isInGame;
-
+        [SerializeField] private StaticItemData _ingredientA;
+        [SerializeField] private StaticItemData _ingredientB;
+        [SerializeField] private StaticItemData _output;
         public override void InitializeValues(string id,string name)
         {
             _id = id;
             _name = name;
-            _isInGame = true;
         }
 
 #if UNITY_EDITOR
@@ -32,8 +32,16 @@ namespace Holylib.ItemEditor
         {
             var scriptableObject = new SerializedObject(this);
 
+            var vis = new VisualElement();
+            var title = new Label("Recipe");
+            title.style.alignSelf = Align.Center;
+            title.style.fontSize = 16;
+
+            vis.Add(title);
+            vis.Add(new InspectorElement(scriptableObject));
+
             return new ElementPreviewData(
-                new InspectorElement(scriptableObject),
+                vis,
                 new[] { scriptableObject });
         }
 

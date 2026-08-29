@@ -10,8 +10,8 @@ namespace Holylib.ItemEditor
     public static class ItemManagementReferences
     {
         public static readonly ItemListElementAndPath[] SupportedItemListTypes = { 
-            new( typeof(StaticItemData), "Assets/Resources/Items"), 
-            new( typeof(RecipeData), "Assets/Resources/Recipes") };
+            new( typeof(StaticItemData), "Assets/Resources/Items",Color.azure), 
+            new( typeof(RecipeData), "Assets/Resources/Recipes",Color.yellow) };
 
         private static string[] GetSearchFolders()
         {

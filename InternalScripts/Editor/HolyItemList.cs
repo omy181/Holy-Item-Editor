@@ -14,6 +14,7 @@ namespace Holylib.ItemEditor
         private Func<List<ItemListElement>> _getListOfSearched;
         private Func<List<ItemListElement>> _getListOfAllItems;
         private Action _refreshItemsCache;
+        private ItemListElementAndPath[] _supportedItemListTypes;
         public HolyItemList(ListView listView,
             Func<List<ItemListElement>> getListOfSearched,
             Action<ItemListElement> onItemSelected,
@@ -29,6 +30,7 @@ namespace Holylib.ItemEditor
             _getListOfSearched = getListOfSearched;
             _refreshItemsCache = refreshItemsCache;
             _getListOfAllItems = getListOfAll;
+            _supportedItemListTypes = supportedItemListTypes;
 
             listView.itemsSource = _getListOfSearched();
 
@@ -36,10 +38,18 @@ namespace Holylib.ItemEditor
             {
                 var listItem = new VisualElement();
 
+                var color = new VisualElement();
+                color.style.height = 20;
+                color.style.width = 2;
+                color.name = "color";
+                color.style.marginRight = 4;
+
                 var image = new Image();
                 image.style.width = 20;
                 image.style.height = 20;
+                image.name = "icon";
 
+                listItem.Add(color);
                 listItem.Add(image);
                 listItem.Add(new Label());
                 listItem.style.flexDirection = FlexDirection.Row;
@@ -67,7 +77,9 @@ namespace Holylib.ItemEditor
             {
                 var list = _getListOfSearched();
                 var itemData = list[index];
-                element.Q<Image>().sprite = itemData.Icon;
+
+                element.Q<VisualElement>("color").style.backgroundColor = _findItemType(itemData).Color;
+                element.Q<Image>("icon").sprite = itemData.Icon;
                 element.Q<Label>().text = itemData.Name;
 
                 ((Action<ItemListElement>)element.userData)(itemData);
@@ -95,6 +107,19 @@ namespace Holylib.ItemEditor
             
         }
 
+        private ItemListElementAndPath _findItemType(ItemListElement element)
+        {
+            foreach (var typeData in _supportedItemListTypes)
+            {
+                if (typeData.Type.IsInstanceOfType(element))
+                {
+                    return typeData;
+                }
+            }
+
+            Debug.LogError("Unkown Element Type");
+            return new();
+        }
         private void _refreshItemsCacheAndList(string id = "")
         {
             _refreshItemsCache();
@@ -152,11 +177,13 @@ namespace Holylib.ItemEditor
     {
         public Type Type;
         public string SavePath;
+        public Color Color;
 
-        public ItemListElementAndPath(Type type, string savePath)
+        public ItemListElementAndPath(Type type, string savePath,Color color)
         {
             Type = type;
             SavePath = savePath;
+            Color = color;
         }
     }
 }

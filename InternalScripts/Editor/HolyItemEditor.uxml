@@ -10,15 +10,18 @@
                     </ui:VisualElement>
                     <ui:VisualElement name="NewItemButtonContainer" style="flex-grow: 0;"/>
                 </ui:VisualElement>
-                <ui:ListView name="ItemListView" class="propery-panel" style="flex-grow: 1;"/>
+                <ui:ListView name="ItemListView" style="flex-grow: 1; flex-shrink: 1;"/>
             </ui:VisualElement>
-            <ui:VisualElement name="Properties" style="flex-grow: 1; flex-shrink: 0; padding-top: 6px; padding-right: 6px; padding-bottom: 6px; padding-left: 6px; justify-content: flex-start; align-self: auto; align-content: auto; align-items: stretch; flex-direction: column;">
-                <ui:VisualElement name="SelectedDetails" class="upper-panel" style="flex-grow: 1; flex-direction: row; max-height: 50px; align-content: stretch; align-self: flex-start; justify-content: flex-start; flex-shrink: 1; align-items: center; aspect-ratio: auto; margin-top: 7px; margin-right: 7px; margin-bottom: 7px; margin-left: 7px; flex-wrap: nowrap;">
+            <ui:VisualElement name="Properties" class="propery-panel" style="flex-grow: 1; flex-shrink: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; justify-content: flex-start; align-self: auto; align-content: auto; align-items: stretch; flex-direction: column;">
+                <ui:VisualElement name="SelectedDetails" class="upper-panel" style="flex-grow: 1; flex-direction: row; max-height: 70px; align-content: stretch; align-self: stretch; justify-content: flex-start; flex-shrink: 0; align-items: center; aspect-ratio: auto; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; flex-wrap: nowrap; padding-top: 3px; padding-right: 3px; padding-bottom: 3px; padding-left: 3px;">
                     <ui:Image source="project://database/Resources/unity_builtin_extra?fileID=10907&amp;guid=0000000000000000f000000000000000&amp;type=0#Background" name="ItemImage" scale-mode="ScaleToFit" style="flex-grow: 0; flex-basis: auto; height: auto; width: auto; aspect-ratio: 1; flex-shrink: 1; max-height: 50px; align-self: auto; justify-content: flex-start; align-items: stretch; align-content: flex-start; flex-direction: column; flex-wrap: nowrap; min-width: 52px; max-width: 50px;"/>
                     <ui:Label text="Selected Item Name" name="ItemName" style="flex-grow: 1; padding-left: 6px; flex-shrink: 0; font-size: 18px; white-space: pre-wrap;"/>
                 </ui:VisualElement>
-                <ui:VisualElement name="PropertiesContent" class="propery-panel" style="flex-grow: 1; background-color: rgb(43, 43, 43); flex-shrink: 0;"/>
+                <ui:VisualElement name="PropertiesContent" class="propery-panel" style="flex-grow: 0; background-color: rgb(43, 43, 43); flex-shrink: 1;"/>
             </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="ListButtons" class="upper-panel" style="flex-grow: 0; flex-direction: row-reverse; position: relative; right: auto; bottom: auto; top: auto; left: auto; flex-shrink: 1; margin-top: 6px; margin-right: 6px; margin-bottom: 6px; margin-left: 6px;">
+            <ui:Button text="Refresh List" name="RefreshListButton" style="flex-shrink: 1; flex-direction: column; flex-grow: 0; margin-bottom: 0; margin-top: 0;"/>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

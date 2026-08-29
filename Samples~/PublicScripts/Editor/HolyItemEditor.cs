@@ -26,7 +26,17 @@ namespace Holylib.ItemEditor
             "Packages/dev.holyperson.holyitemeditor/InternalScripts/Editor/HolyItemEditor.uxml");
 
             VisualElement root = rootVisualElement;
-            root.Add(visualTree.Instantiate());
+            var uxmlRoot = visualTree.Instantiate();
+            
+            root.style.flexGrow = 1;
+
+            uxmlRoot.style.flexGrow = 1;
+            uxmlRoot.style.flexShrink = 0;
+            uxmlRoot.style.height = new StyleLength(Length.Percent(100));
+            uxmlRoot.style.width = new StyleLength(Length.Percent(100));
+
+            root.Add(uxmlRoot);
+
 
             ItemManagementReferences.RefreshItemsCache();
 
@@ -54,6 +64,8 @@ namespace Holylib.ItemEditor
                 ItemManagementReferences.SupportedItemListTypes,
                 ItemManagementReferences.RefreshItemsCache,
                 ItemManagementReferences.GetAListOfAllItems);
+
+            root.Q<Button>("RefreshListButton").RegisterCallback<MouseUpEvent>((e)=>_refresh(""));
 
         }
 

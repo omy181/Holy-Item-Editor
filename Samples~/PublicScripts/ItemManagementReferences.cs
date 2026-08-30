@@ -29,6 +29,14 @@ namespace Holylib.ItemEditor
         {
             ItemManagement.RefreshItemsCache(SupportedItemListTypes,GetSearchFolders());
         }
+
+        public static ListManiplutator[] GetManiplutators() {
+            return new ListManiplutator[] {
+                new("Test Print Item Name",
+                (e,i)=>Debug.Log($"{i.GetValues().ID}"))
+            };
+        }
+
     }
 }
 #endif

@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
+using UnityEditor.VersionControl;
+using UnityEditorInternal.VersionControl;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -25,7 +27,8 @@ namespace Holylib.ItemEditor
             Action<string, Action, Func<List<ItemListElement>>> deleteItem, 
             ItemListElementAndPath[] supportedItemListTypes,
             Action refreshItemsCache,
-            Func<List<ItemListElement>> getListOfAll)
+            Func<List<ItemListElement>> getListOfAll,
+            ListManiplutator[] listManiplutors)
         {
             _listView = listView;
             _getListOfSearched = getListOfSearched;
@@ -58,18 +61,31 @@ namespace Holylib.ItemEditor
                 listItem.style.alignContent = Align.Center;
                 listItem.style.alignItems = Align.FlexStart;
 
-                ItemListElement currentItem = null;
-                listItem.AddManipulator(new ContextualMenuManipulator((evt) =>
-                {
-                    if (currentItem == null) return;
 
-                    var screenPos = GUIUtility.GUIToScreenPoint(evt.mousePosition);
-                    evt.menu.AppendAction(
-                        "Delete Item",
-                        (x) => DeleteItemPopup.Show(currentItem.GetValues().Name, screenPos, () => deleteItem(currentItem.GetValues().ID,()=> RefreshItemsCacheAndList(),_getListOfAllItems)),
-                        DropdownMenuAction.AlwaysEnabled
-                    );
+                // Manipulators
+
+                ItemListElement currentItem = null;
+
+                foreach (var maniplutator in listManiplutors)
+                {
+                    _addManipulator(listItem, () => currentItem, maniplutator);
+                }
+
+                _addManipulator(listItem, () => currentItem, new("Show in Project Window",
+                (evt, item) => {
+                    Type projectBrowserType = Type.GetType("UnityEditor.ProjectBrowser,UnityEditor");
+                    EditorWindow projectWindow = EditorWindow.GetWindow(projectBrowserType);
+                    projectWindow.Focus();
+                    Selection.activeObject = (ScriptableObject)item;
+                    EditorGUIUtility.PingObject((ScriptableObject)item);
                 }));
+
+                _addManipulator(listItem,()=>currentItem,new("Delete Item",
+                    (evt, item) => {
+                        var screenPos = GUIUtility.GUIToScreenPoint(evt.mousePosition);
+                        DeleteItemPopup.Show(item.GetValues().Name, screenPos, () => deleteItem(item.GetValues().ID, () => RefreshItemsCacheAndList(), _getListOfAllItems));
+                }));
+
 
                 listItem.userData = (Action<ItemListElement>)(item => currentItem = item);
                 return listItem;
@@ -109,6 +125,19 @@ namespace Holylib.ItemEditor
             
         }
 
+        private void _addManipulator(VisualElement listItem,Func<ItemListElement> getCurrentItem, ListManiplutator maniplutator)
+        {
+            listItem.AddManipulator(new ContextualMenuManipulator((evt) =>
+            {
+                if (getCurrentItem() == null) return;
+
+                evt.menu.AppendAction(
+                    maniplutator.ManiplutatorName,
+                    (x) => maniplutator.OnClicked(evt, getCurrentItem()),
+                    DropdownMenuAction.AlwaysEnabled
+                );
+            }));
+        }
         private ItemListElementAndPath _findItemType(ItemListElement element)
         {
             foreach (var typeData in _supportedItemListTypes)
@@ -205,6 +234,18 @@ namespace Holylib.ItemEditor
             Type = type;
             SavePath = savePath;
             Color = color;
+        }
+    }
+
+    public struct ListManiplutator
+    {
+        public string ManiplutatorName;
+        public Action<ContextualMenuPopulateEvent, ItemListElement> OnClicked;
+
+        public ListManiplutator(string maniplutatorName, Action<ContextualMenuPopulateEvent, ItemListElement> onClicked)
+        {
+            ManiplutatorName = maniplutatorName;
+            OnClicked = onClicked;
         }
     }
 }

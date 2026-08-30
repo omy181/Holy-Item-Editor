@@ -63,7 +63,8 @@ namespace Holylib.ItemEditor
                 ItemCreation.DeleteItem,
                 ItemManagementReferences.SupportedItemListTypes,
                 ItemManagementReferences.RefreshItemsCache,
-                ItemManagementReferences.GetAListOfAllItems);
+                ItemManagementReferences.GetAListOfAllItems,
+                ItemManagementReferences.GetManiplutators());
 
             root.Q<Button>("RefreshListButton").RegisterCallback<MouseUpEvent>((e)=> _listView.RefreshItemsCacheAndList());
 

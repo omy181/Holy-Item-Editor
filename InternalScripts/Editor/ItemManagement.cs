@@ -12,7 +12,7 @@ namespace Holylib.ItemEditor
     {
         private static List<ItemListElement> _itemCache = new();
 
-        public static List<ItemListElement> GetAListOfAllItems()
+        public static List<ItemListElement> GetListOfAllItems()
         {
             return _itemCache;
         }
@@ -34,7 +34,7 @@ namespace Holylib.ItemEditor
             _itemCache = combined;
         }
 
-        private static List<ItemListElement> _refreshItemsCache<T>(string[] searchFolders) where T : ItemListElement
+        private static List<ItemListElement> _refreshItemsCache<T>(string[] searchFolders) where T : ScriptableObject,ItemListElement
         {
             var guids = AssetDatabase.FindAssets($"t:{typeof(T).Name}", searchFolders);
             var originalList = new List<ItemListElement>();

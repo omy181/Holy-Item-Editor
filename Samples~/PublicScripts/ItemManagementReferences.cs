@@ -22,7 +22,7 @@ namespace Holylib.ItemEditor
         
         public static List<ItemListElement> GetAListOfAllItems()
         {
-            return ItemManagement.GetAListOfAllItems();
+            return ItemManagement.GetListOfAllItems();
         }
 
         public static void RefreshItemsCache()

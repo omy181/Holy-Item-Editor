@@ -20,7 +20,7 @@ namespace Holylib.ItemEditor
             var closedMethod = openMethod.MakeGenericMethod(type);
             closedMethod.Invoke(null, new object[] { name, refreshList, path });
         }
-        public static void CreateItem<T>(string name,Action<string> refreshList,string path) where T : ItemListElement
+        public static T CreateItem<T>(string name,Action<string> refreshList,string path) where T : ScriptableObject,ItemListElement
         {
 
             var id = $"{typeof(T).Name.ToLower()}_{name.Replace(" ", "").ToLower()}";
@@ -35,6 +35,8 @@ namespace Holylib.ItemEditor
             AssetDatabase.Refresh();
 
             refreshList(id);
+
+            return newItem;
         }
 
         public static bool IsValidNameForNewItem(Type type, string name,Func<List<ItemListElement>> getAllItems)
@@ -52,16 +54,16 @@ namespace Holylib.ItemEditor
 
             var allItems = getAllItems.Invoke();
 
-            return !allItems.Exists(i => i.ID.Equals(name, System.StringComparison.OrdinalIgnoreCase));
+            return !allItems.Exists(i => i.GetValues().ID.Equals(name, System.StringComparison.OrdinalIgnoreCase));
         }
 
         public static void DeleteItem(string id, Action refreshList,Func<List<ItemListElement>> getAllItems)
         {
             try
             {
-                var item = getAllItems().Find(i => i.ID == id);
+                var item = getAllItems().Find(i => i.GetValues().ID == id);
 
-                var path = AssetDatabase.GetAssetPath(item);
+                var path = AssetDatabase.GetAssetPath((ScriptableObject)item);
                 AssetDatabase.DeleteAsset(path);
                 AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh();

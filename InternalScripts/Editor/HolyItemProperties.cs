@@ -29,8 +29,8 @@ namespace Holylib.ItemEditor
             _containerParent.Clear();
             _containerParent.Add(elementPreviewData.PropertyInspector);
 
-            _itemImage.sprite = itemListElement.Icon;
-            _itemLabel.text = itemListElement.Name;
+            _itemImage.sprite = itemListElement.GetValues().Icon;
+            _itemLabel.text = itemListElement.GetValues().Name;
 
             var saveButton = new Button();
             saveButton.text = "Save Changes";
@@ -55,9 +55,9 @@ namespace Holylib.ItemEditor
             
             AssetDatabase.SaveAssets();
 
-            _refreshList(itemListElement.ID);
+            _refreshList(itemListElement.GetValues().ID);
 
-            Debug.Log(itemListElement.Name + " updated");
+            Debug.Log(itemListElement.GetValues().Name + " updated");
         }
     }
 

@@ -15,6 +15,7 @@ namespace Holylib.ItemEditor
         private Func<List<ItemListElement>> _getListOfAllItems;
         private Action _refreshItemsCache;
         private ItemListElementAndPath[] _supportedItemListTypes;
+        private Action<Type, string, Action<string>, string> _onItemCreated;
         public HolyItemList(ListView listView,
             Func<List<ItemListElement>> getListOfSearched,
             Action<ItemListElement> onItemSelected,
@@ -31,6 +32,7 @@ namespace Holylib.ItemEditor
             _refreshItemsCache = refreshItemsCache;
             _getListOfAllItems = getListOfAll;
             _supportedItemListTypes = supportedItemListTypes;
+            _onItemCreated = onItemCreated;
 
             listView.itemsSource = _getListOfSearched();
 
@@ -64,7 +66,7 @@ namespace Holylib.ItemEditor
                     var screenPos = GUIUtility.GUIToScreenPoint(evt.mousePosition);
                     evt.menu.AppendAction(
                         "Delete Item",
-                        (x) => DeleteItemPopup.Show(currentItem.Name, screenPos, () => deleteItem(currentItem.ID,()=> _refreshItemsCacheAndList(),_getListOfAllItems)),
+                        (x) => DeleteItemPopup.Show(currentItem.GetValues().Name, screenPos, () => deleteItem(currentItem.GetValues().ID,()=> RefreshItemsCacheAndList(),_getListOfAllItems)),
                         DropdownMenuAction.AlwaysEnabled
                     );
                 }));
@@ -79,8 +81,8 @@ namespace Holylib.ItemEditor
                 var itemData = list[index];
 
                 element.Q<VisualElement>("color").style.backgroundColor = _findItemType(itemData).Color;
-                element.Q<Image>("icon").sprite = itemData.Icon;
-                element.Q<Label>().text = itemData.Name;
+                element.Q<Image>("icon").sprite = itemData.GetValues().Icon;
+                element.Q<Label>().text = itemData.GetValues().Name;
 
                 ((Action<ItemListElement>)element.userData)(itemData);
             };
@@ -92,13 +94,13 @@ namespace Holylib.ItemEditor
 
 
             createNewButtonContainer.Clear();
-            foreach (var type in supportedItemListTypes)
+            foreach (var type in _supportedItemListTypes)
             {
                 var nButton = new Button();
                 nButton.text = $"Create New {type.Type.Name}";
                 nButton.RegisterCallback<MouseUpEvent>((a) =>
                 CreateItemPopup.Show(
-                    (id) => onItemCreated(type.Type,id, _refreshItemsCacheAndList, type.SavePath),
+                    (id) => CreateItem(type,id),
                     (name)=>isValidNameForItem(type.Type,name, _getListOfAllItems)));
 
                 createNewButtonContainer.Add(nButton);
@@ -120,7 +122,12 @@ namespace Holylib.ItemEditor
             Debug.LogError("Unkown Element Type");
             return new();
         }
-        private void _refreshItemsCacheAndList(string id = "")
+
+        public void CreateItem(ItemListElementAndPath typeData,string id)
+        {
+            _onItemCreated(typeData.Type, id, RefreshItemsCacheAndList, typeData.SavePath);
+        }
+        public void RefreshItemsCacheAndList(string id = "")
         {
             _refreshItemsCache();
             RefreshList(id);
@@ -130,7 +137,7 @@ namespace Holylib.ItemEditor
             var items = _getListOfSearched();
             _listView.itemsSource = items;
             _listView.RefreshItems();
-            var index = string.IsNullOrEmpty(id) ? -1 : items.IndexOf(items.Find(i => i.ID == id));
+            var index = string.IsNullOrEmpty(id) ? -1 : items.IndexOf(items.Find(i => i.GetValues().ID == id));
 
             _listView.SetSelectionWithoutNotify(new int[] { });
 
@@ -147,20 +154,34 @@ namespace Holylib.ItemEditor
         public ItemListElement GetItemListElementByID(string id)
         {
             var items = _getListOfSearched();
-            return items.Find(i => i.ID == id);
+            return items.Find(i => i.GetValues().ID == id);
         }
     }
 
-    public abstract class ItemListElement : ScriptableObject
+    /// <summary>
+    /// This interface is assumed to be put on ScriptableObjects
+    /// </summary>
+    public interface ItemListElement
     {
-        public abstract string ID { get; }
-        public abstract string Name { get; }
-        public abstract Sprite Icon { get; }
-        public abstract void InitializeValues(string id, string name);
-        public abstract ElementPreviewData PreviewElement();
-        public abstract bool CustomSearchLogic(string querry);
+        public ItemListData GetValues();
+        public void InitializeValues(string id, string name);
+        public ElementPreviewData PreviewElement();
+        public bool CustomSearchLogic(string query);
     }
 
+    public struct ItemListData
+    {
+        public string ID;
+        public string Name;
+        public Sprite Icon;
+
+        public ItemListData(string iD, string name, Sprite icon)
+        {
+            ID = iD;
+            Name = name;
+            Icon = icon;
+        }
+    }
     public struct ElementPreviewData
     {
         public VisualElement PropertyInspector;

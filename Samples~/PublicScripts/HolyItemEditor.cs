@@ -44,12 +44,12 @@ namespace Holylib.ItemEditor
                 root.Q<VisualElement>("PropertiesContent"),
                 root.Q<Image>("ItemImage"),
                 root.Q<Label>("ItemName"),
-                _refresh);
+                _refreshList);
 
             HolySearchEngine searchEngine = new(
                 ItemManagementReferences.GetAListOfAllItems,
                 root.Q<TextField>("SearchField"),
-                _refresh,
+                _refreshList,
                 root.Q<Button>("SearchGuide"),
                 _getSearchGuide());
 
@@ -65,7 +65,7 @@ namespace Holylib.ItemEditor
                 ItemManagementReferences.RefreshItemsCache,
                 ItemManagementReferences.GetAListOfAllItems);
 
-            root.Q<Button>("RefreshListButton").RegisterCallback<MouseUpEvent>((e)=>_refresh(""));
+            root.Q<Button>("RefreshListButton").RegisterCallback<MouseUpEvent>((e)=> _listView.RefreshItemsCacheAndList());
 
         }
 
@@ -80,10 +80,11 @@ namespace Holylib.ItemEditor
             return searchGuide;
         }
 
-        private void _refresh(string id)
+        private void _refreshList(string id)
         {
             _listView.RefreshList(id);
         }
+
         private void _previewItem(ItemListElement item)
         {
             if(item != null)
@@ -109,7 +110,7 @@ namespace Holylib.ItemEditor
 
                     var wnd = GetWindow<HolyItemEditor>();
                     wnd.Focus();
-                    wnd._previewItem(wnd._listView.GetItemListElementByID(item.ID));
+                    wnd._previewItem(wnd._listView.GetItemListElementByID(item.GetValues().ID));
                     return true;
                 }
             }

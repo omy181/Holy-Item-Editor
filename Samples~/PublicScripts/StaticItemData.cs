@@ -9,26 +9,28 @@ namespace Holylib.ItemEditor
 {
 
     [CreateAssetMenu(fileName = "StaticItemData", menuName = "Holylib/StaticItemData")]
-    public class StaticItemData : ItemListElement
+    public class StaticItemData : ScriptableObject, ItemListElement
     {
         [SerializeField] private string _id;
-        public override string ID => _id;
+        public string ID => _id;
         [SerializeField] private string _name;
-        public override string Name => _name;
+        public string Name => _name;
         [SerializeField] private Sprite _icon;
-        public override Sprite Icon => _icon;
+        public Sprite Icon => _icon;
         [SerializeField] private bool _isInGame;
         public bool IsIngame => _isInGame;
 
-        public override void InitializeValues(string id,string name)
+        public void InitializeValues(string id,string name)
         {
             _id = id;
             _name = name;
             _isInGame = true;
         }
 
+        public ItemListData GetValues() => new(ID,Name,Icon);
+
 #if UNITY_EDITOR
-        public override ElementPreviewData PreviewElement()
+        public ElementPreviewData PreviewElement()
         {
             var scriptableObject = new SerializedObject(this);
 
@@ -37,7 +39,7 @@ namespace Holylib.ItemEditor
                 new[] { scriptableObject });
         }
 
-        public override bool DoesFitSearchQuerry(string querry)
+        public bool CustomSearchLogic(string query)
         {
             return false;
         }

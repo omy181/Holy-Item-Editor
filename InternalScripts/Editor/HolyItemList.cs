@@ -19,7 +19,7 @@ namespace Holylib.ItemEditor
         public HolyItemList(ListView listView,
             Func<List<ItemListElement>> getListOfSearched,
             Action<ItemListElement> onItemSelected,
-            VisualElement createNewButtonContainer,
+            Button createNewButton,
             Action<Type, string, Action<string>,string> onItemCreated,
             Func<Type,string, Func<List<ItemListElement>>, bool> isValidNameForItem,
             Action<string, Action, Func<List<ItemListElement>>> deleteItem, 
@@ -106,18 +106,24 @@ namespace Holylib.ItemEditor
             };
 
 
-            createNewButtonContainer.Clear();
-            foreach (var type in _supportedItemListTypes)
-            {
-                var nButton = new Button();
-                nButton.text = $"{type.Type.Name}";
-                nButton.RegisterCallback<MouseUpEvent>((a) =>
-                CreateItemPopup.Show(
-                    (id) => CreateItem(type,id),
-                    (name)=>isValidNameForItem(type.Type,name, _getListOfAllItems)));
 
-                createNewButtonContainer.Add(nButton);
-            }
+            createNewButton.RegisterCallback<MouseUpEvent>((e) =>
+            {
+                List<(string name, Action onClick)> buttons = new();
+
+                foreach (var type in _supportedItemListTypes)
+                {
+                    buttons.Add(
+                        new (
+                            $"{type.Type.Name}",
+                            ()=>CreateItemPopup.Show(
+                        (id) => CreateItem(type, id),
+                        (name) => isValidNameForItem(type.Type, name, _getListOfAllItems))));
+                }
+
+                MenuPopup.Show("Create New", buttons);
+            });
+
 
             
         }

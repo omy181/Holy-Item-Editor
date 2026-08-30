@@ -57,7 +57,7 @@ namespace Holylib.ItemEditor
                 root.Q<ListView>("ItemListView"),
                 searchEngine.GetSearchReults,
                 _previewItem,
-                root.Q<VisualElement>("NewItemButtonContainer"),
+                root.Q<Button>("CreateNewButton"),
                 ItemCreation.CreateItem,
                 ItemCreation.IsValidNameForNewItem,
                 ItemCreation.DeleteItem,

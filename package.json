@@ -15,14 +15,14 @@
   "description": "A scriptable object creation and organization tool template",
   "samples": [
     {
-      "displayName": "Basic Item Editor",
-      "description": "Code for a simple working ui",
-      "path": "Samples~/PublicScripts"
+      "displayName": "Holy Item Editor UI",
+      "description": "Master UI connecting all logic",
+      "path": "HolyItemEditor~/ItemEditorMaster"
     },
     {
-      "displayName": "Example items",
+      "displayName": "Example item assets",
       "description": "Contains some example items with sprites",
-      "path": "Samples~/ExampleItems"
+      "path": "HolyItemEditor~/ExampleItems"
     }
   ]
 }

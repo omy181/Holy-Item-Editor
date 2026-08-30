@@ -3,8 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
-using UnityEditor.VersionControl;
-using UnityEditorInternal.VersionControl;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -81,9 +79,8 @@ namespace Holylib.ItemEditor
                 }));
 
                 _addManipulator(listItem,()=>currentItem,new("Delete Item",
-                    (evt, item) => {
-                        var screenPos = GUIUtility.GUIToScreenPoint(evt.mousePosition);
-                        DeleteItemPopup.Show(item.GetValues().Name, screenPos, () => deleteItem(item.GetValues().ID, () => RefreshItemsCacheAndList(), _getListOfAllItems));
+                    (mousePos, item) => {
+                        DeleteItemPopup.Show(item.GetValues().Name, mousePos, () => deleteItem(item.GetValues().ID, () => RefreshItemsCacheAndList(), _getListOfAllItems));
                 }));
 
 
@@ -131,9 +128,11 @@ namespace Holylib.ItemEditor
             {
                 if (getCurrentItem() == null) return;
 
+                var screenPos = GUIUtility.GUIToScreenPoint(evt.mousePosition);
+
                 evt.menu.AppendAction(
                     maniplutator.ManiplutatorName,
-                    (x) => maniplutator.OnClicked(evt, getCurrentItem()),
+                    (x) => maniplutator.OnClicked(screenPos, getCurrentItem()),
                     DropdownMenuAction.AlwaysEnabled
                 );
             }));
@@ -240,9 +239,9 @@ namespace Holylib.ItemEditor
     public struct ListManiplutator
     {
         public string ManiplutatorName;
-        public Action<ContextualMenuPopulateEvent, ItemListElement> OnClicked;
+        public Action<Vector2, ItemListElement> OnClicked; // Mouse Position On Click
 
-        public ListManiplutator(string maniplutatorName, Action<ContextualMenuPopulateEvent, ItemListElement> onClicked)
+        public ListManiplutator(string maniplutatorName, Action<Vector2, ItemListElement> onClicked)
         {
             ManiplutatorName = maniplutatorName;
             OnClicked = onClicked;

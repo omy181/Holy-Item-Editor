@@ -117,20 +117,23 @@ namespace Holylib.ItemEditor
                                 if (!string.IsNullOrEmpty(customQuery.Prefix))
                                 {
                                     if (sectionText.StartsWith(customQuery.Prefix))
-                                        sectionT = sectionText.Remove(0, customQuery.Prefix.Length);
+                                        {
+                                            sectionT = sectionText.Remove(0, customQuery.Prefix.Length);
+                                            result = customQuery.Condition(sectionT);
+                                        }
                                 }
                                 else
                                 {
                                     Debug.LogWarning($"Custom query of {Item.GetType().Name} doesn't have a prefix", (ScriptableObject)Item);
                                 }
 
-                                result = customQuery.Condition(sectionT);
+                                
 
                                 if (result) { break; }
                             }
                         }
 
-                        return result || Item.GetValues().ID.ToLower().Contains(sectionText) || Item.GetValues().Name.ToLower().Contains(sectionText);
+                        return result || Item.GetValues().ID.ToLower().Contains(sectionText);
                     };
                 }
                 

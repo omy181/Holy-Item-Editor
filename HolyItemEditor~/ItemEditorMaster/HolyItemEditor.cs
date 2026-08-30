@@ -1,6 +1,7 @@
 #if UNITY_EDITOR
 using System.Linq;
 using UnityEditor;
+using UnityEditor.ShortcutManagement;
 using UnityEditor.Callbacks;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -44,19 +45,19 @@ namespace Holylib.ItemEditor
                 root.Q<VisualElement>("PropertiesContent"),
                 root.Q<Image>("ItemImage"),
                 root.Q<Label>("ItemName"),
-                _refreshList);
+                (s)=>_listView.RefreshList(s));
 
             HolySearchEngine searchEngine = new(
                 ItemManagementReferences.GetAListOfAllItems,
                 root.Q<TextField>("SearchField"),
-                _refreshList,
+                (s) => _listView.RefreshList(s),
                 root.Q<Button>("SearchGuide"),
                 ItemManagementReferences.SupportedItemListTypes);
 
             _listView = new(
                 root.Q<ListView>("ItemListView"),
                 searchEngine.GetSearchReults,
-                _previewItem,
+                _itemProperties.PreviewItem,
                 root.Q<Button>("CreateNewButton"),
                 ItemCreation.CreateItem,
                 ItemCreation.IsValidNameForNewItem,
@@ -70,24 +71,7 @@ namespace Holylib.ItemEditor
 
         }
 
-        private void _refreshList(string id)
-        {
-            _listView.RefreshList(id);
-        }
-
-        private void _previewItem(ItemListElement item)
-        {
-            if(item != null)
-            {
-                _itemProperties.PreviewItem(item);  
-            }
-            else
-            {
-                _itemProperties.PreviewItem();
-            }
-            
-        }
-
+        #region Open Asset
         [OnOpenAsset]
         private static bool _onOpenAsset(EntityId id, int line)
         {
@@ -100,13 +84,40 @@ namespace Holylib.ItemEditor
 
                     var wnd = GetWindow<HolyItemEditor>();
                     wnd.Focus();
-                    wnd._previewItem(wnd._listView.GetItemListElementByID(item.GetValues().ID));
+                    wnd._itemProperties.PreviewItem(wnd._listView.GetItemListElementByID(item.GetValues().ID));
                     return true;
                 }
             }
 
             return false; // not our asset
         }
+        #endregion
+
+        #region Save Logic
+        public class SaveShortcutContext : IShortcutContext
+        {
+            public bool active => focusedWindow is HolyItemEditor;
+        }
+
+        private static readonly SaveShortcutContext s_ShortcutContext = new SaveShortcutContext();
+
+        private void OnEnable()
+        {
+            ShortcutManager.RegisterContext(s_ShortcutContext);
+        }
+
+        private void OnDisable()
+        {
+            ShortcutManager.UnregisterContext(s_ShortcutContext);
+        }
+
+        [Shortcut("HolyItemEditor/Save", typeof(SaveShortcutContext), KeyCode.S, ShortcutModifiers.Action)]
+        private static void SaveShortcut(ShortcutArguments args)
+        {
+            var window = focusedWindow as HolyItemEditor;
+            window?._itemProperties?.SaveChanges(true);
+        }
+        #endregion
     }
 }
 #endif

@@ -4,6 +4,7 @@ using UnityEditor.UIElements;
 #endif
 
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Holylib.ItemEditor
 {

@@ -13,12 +13,14 @@ namespace Holylib.ItemEditor
         private TextField _inputField;
         private Action<string> _refresh;
         private ItemListElementAndPath[] _itemTypes;
+        private Dictionary<ItemListElement, SearchQuery[]> _searchQueriesByItem;
         public HolySearchEngine(Func<List<ItemListElement>> getItems,TextField inputField,Action<string> refresh,Button guideButton, ItemListElementAndPath[] itemTypes)
         {
             _getItems = getItems;
             _inputField = inputField;
             _refresh = refresh;
             _itemTypes = itemTypes;
+            _setupSearchQueries();
 
             _inputField.RegisterCallback<ChangeEvent<string>>((v) =>
             {
@@ -31,12 +33,29 @@ namespace Holylib.ItemEditor
             });
         }
 
+        private List<ItemListElement> _getDistinctItems()
+        {
+            return _getItems()
+                .GroupBy(item => item.GetType())
+                .Select(group => group.First())
+                .ToList();
+        }
+        private void _setupSearchQueries()
+        {
+            _searchQueriesByItem = new();
+
+            foreach (var item in _getItems())
+            {
+                _searchQueriesByItem[item] = item.GetCustomSearchLogic();
+            }
+        }
+
         public List<ItemListElement> GetSearchReults()
         {
             return _getListElements(_getItems, _inputField.text); 
         }
 
-        private static List<ItemListElement> _getListElements(Func<List<ItemListElement>> getItems, string searchText)
+        private List<ItemListElement> _getListElements(Func<List<ItemListElement>> getItems, string searchText)
         {
             var items = getItems();
 
@@ -44,9 +63,8 @@ namespace Holylib.ItemEditor
             return items.FindAll(i => conditions.All(j => j(i)));
         }
 
-        private static Func<ItemListElement, bool>[] _textToConditions(string text)
+        private Func<ItemListElement, bool>[] _textToConditions(string text)
         {
-
             List<Func<ItemListElement, bool>> conditions = new();
 
             var sections = text.ToLower().Split(' ');
@@ -77,7 +95,17 @@ namespace Holylib.ItemEditor
                     condition = (Item) =>
                     {
                         bool result = false;
-                        SearchQuery[] customQueries = Item.GetCustomSearchLogic();
+
+                        SearchQuery[] customQueries = null;
+                        if (_searchQueriesByItem.TryGetValue(Item,out var querry))
+                        {
+                            customQueries = querry;
+                        }
+                        else
+                        {
+                            _searchQueriesByItem[Item] = Item.GetCustomSearchLogic();
+                            customQueries = _searchQueriesByItem[Item];
+                        }
 
                         if(customQueries != null)
                         foreach (var customQuery in customQueries)
@@ -98,7 +126,7 @@ namespace Holylib.ItemEditor
 
                                 result = customQuery.Condition(sectionT);
 
-                                if(result) { break; }
+                                if (result) { break; }
                             }
                         }
 
@@ -121,10 +149,7 @@ namespace Holylib.ItemEditor
                 "<b><color=#E57373>! - Negation</color></b>\n" +
                 "<color=#B0BEC5>   Put before any query to negate</color>";
 
-            var distinctItems = _getItems()
-                .GroupBy(item => item.GetType())
-                .Select(group => group.First())
-                .ToList();
+            var distinctItems = _getDistinctItems();
 
             foreach (var item in distinctItems)
             {

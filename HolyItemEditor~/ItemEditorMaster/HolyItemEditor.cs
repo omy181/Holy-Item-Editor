@@ -51,7 +51,7 @@ namespace Holylib.ItemEditor
                 root.Q<TextField>("SearchField"),
                 _refreshList,
                 root.Q<Button>("SearchGuide"),
-                _getSearchGuide());
+                ItemManagementReferences.SupportedItemListTypes);
 
             _listView = new(
                 root.Q<ListView>("ItemListView"),
@@ -68,17 +68,6 @@ namespace Holylib.ItemEditor
 
             root.Q<Button>("RefreshListButton").RegisterCallback<MouseUpEvent>((e)=> _listView.RefreshItemsCacheAndList());
 
-        }
-
-        private string _getSearchGuide()
-        {
-            string searchGuide =
-                "<b><size=120%><color=#FFD700>Search Guide</color></size></b>\n\n" +
-                "<b><color=#E57373>/ - Type</color></b>\n" +
-                "<color=#B0BEC5>   /StaticItemData  /RecipeData ...</color>\n" +
-                "<b><color=#E57373>! - Negation</color></b>\n" +
-                "<color=#B0BEC5>   !stone  !/RecipeData ...</color>";
-            return searchGuide;
         }
 
         private void _refreshList(string id)

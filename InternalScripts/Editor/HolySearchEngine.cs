@@ -12,11 +12,13 @@ namespace Holylib.ItemEditor
         private Func<List<ItemListElement>> _getItems;
         private TextField _inputField;
         private Action<string> _refresh;
-        public HolySearchEngine(Func<List<ItemListElement>> getItems,TextField inputField,Action<string> refresh,Button guideButton,string searchGuide)
+        private ItemListElementAndPath[] _itemTypes;
+        public HolySearchEngine(Func<List<ItemListElement>> getItems,TextField inputField,Action<string> refresh,Button guideButton, ItemListElementAndPath[] itemTypes)
         {
             _getItems = getItems;
             _inputField = inputField;
             _refresh = refresh;
+            _itemTypes = itemTypes;
 
             _inputField.RegisterCallback<ChangeEvent<string>>((v) =>
             {
@@ -25,7 +27,7 @@ namespace Holylib.ItemEditor
 
             guideButton.RegisterCallback<MouseUpEvent>((e) =>
             {
-                MessagePopup.Show(searchGuide);
+                MessagePopup.Show(_getSearchGuide());
             });
         }
 
@@ -74,7 +76,27 @@ namespace Holylib.ItemEditor
                 {
                     condition = (Item) =>
                     {
-                        return Item.CustomSearchLogic(sectionText) || Item.GetValues().ID.ToLower().Contains(sectionText) || Item.GetValues().Name.ToLower().Contains(sectionText);
+                        bool result = false;
+                        SearchQuery customQuery = Item.GetCustomSearchLogic();
+
+                        if(customQuery.Condition != null)
+                        {
+                            string sectionT = sectionText;
+
+                            if (!string.IsNullOrEmpty(customQuery.Prefix))
+                            {
+                                if(sectionText.StartsWith(customQuery.Prefix))
+                                    sectionT = sectionText.Remove(0, customQuery.Prefix.Length);
+                            }
+                            else
+                            {
+                                Debug.LogWarning($"Custom query of {Item.GetType().Name} doesn't have a prefix", (ScriptableObject)Item);
+                            }
+
+                            result = customQuery.Condition(sectionT);
+                        }
+
+                        return result || Item.GetValues().ID.ToLower().Contains(sectionText) || Item.GetValues().Name.ToLower().Contains(sectionText);
                     };
                 }
                 
@@ -82,6 +104,53 @@ namespace Holylib.ItemEditor
             }
 
             return conditions.ToArray();
+        }
+
+        private string _getSearchGuide()
+        {
+            string searchGuide =
+                "<b><size=120%><color=#FFD700>Search Guide</color></size></b>\n\n" +
+                "<b><color=#E57373>/ - Type</color></b>\n" +
+                "<color=#B0BEC5>   By type of the ScriptableObject</color>\n" +
+                "<b><color=#E57373>! - Negation</color></b>\n" +
+                "<color=#B0BEC5>   Put before any query to negate</color>";
+
+            var distinctItems = _getItems()
+                .GroupBy(item => item.GetType())
+                .Select(group => group.First())
+                .ToList();
+
+            foreach (var item in distinctItems)
+            {
+                var queryOutput = item.GetCustomSearchLogic();
+
+                if(queryOutput.Condition == null || string.IsNullOrEmpty(queryOutput.Prefix))
+                {
+                    continue;
+                    //Debug.LogWarning($"Custom query of {item.GetType().Name} doesn't have a prefix", (ScriptableObject)item);
+                }
+
+                searchGuide+= 
+                $"\n<b><color=#E57373>{queryOutput.Prefix} - {queryOutput.Name}</color></b>\n" +
+                $"<color=#B0BEC5>   {queryOutput.Description}</color>";
+            }
+            return searchGuide;
+        }
+    }
+
+    public struct SearchQuery
+    {
+        public string Prefix;
+        public string Name;
+        public string Description;
+        public Func<string, bool> Condition;
+
+        public SearchQuery(string prefix,string name, string description, Func<string, bool> condition)
+        {
+            Prefix = prefix;
+            Name = name;
+            Description = description;
+            Condition = condition;
         }
     }
 }

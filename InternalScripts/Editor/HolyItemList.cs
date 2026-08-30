@@ -110,7 +110,7 @@ namespace Holylib.ItemEditor
             foreach (var type in _supportedItemListTypes)
             {
                 var nButton = new Button();
-                nButton.text = $"Create New {type.Type.Name}";
+                nButton.text = $"{type.Type.Name}";
                 nButton.RegisterCallback<MouseUpEvent>((a) =>
                 CreateItemPopup.Show(
                     (id) => CreateItem(type,id),

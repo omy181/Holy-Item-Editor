@@ -39,9 +39,9 @@ namespace Holylib.ItemEditor
                 new[] { scriptableObject });
         }
 
-        public SearchQuery GetCustomSearchLogic()
+        public SearchQuery[] GetCustomSearchLogic()
         {
-            return new();
+            return null;
         }
 #endif
     }

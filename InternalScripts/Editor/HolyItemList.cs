@@ -194,7 +194,7 @@ namespace Holylib.ItemEditor
         public ItemListData GetValues();
         public void InitializeValues(string id, string name);
         public ElementPreviewData PreviewElement();
-        public SearchQuery GetCustomSearchLogic();
+        public SearchQuery[] GetCustomSearchLogic();
     }
 
     public struct ItemListData

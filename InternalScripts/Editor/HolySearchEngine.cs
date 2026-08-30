@@ -77,23 +77,29 @@ namespace Holylib.ItemEditor
                     condition = (Item) =>
                     {
                         bool result = false;
-                        SearchQuery customQuery = Item.GetCustomSearchLogic();
+                        SearchQuery[] customQueries = Item.GetCustomSearchLogic();
 
-                        if(customQuery.Condition != null)
+                        if(customQueries != null)
+                        foreach (var customQuery in customQueries)
                         {
-                            string sectionT = sectionText;
-
-                            if (!string.IsNullOrEmpty(customQuery.Prefix))
+                            if (customQuery.Condition != null)
                             {
-                                if(sectionText.StartsWith(customQuery.Prefix))
-                                    sectionT = sectionText.Remove(0, customQuery.Prefix.Length);
-                            }
-                            else
-                            {
-                                Debug.LogWarning($"Custom query of {Item.GetType().Name} doesn't have a prefix", (ScriptableObject)Item);
-                            }
+                                string sectionT = sectionText;
 
-                            result = customQuery.Condition(sectionT);
+                                if (!string.IsNullOrEmpty(customQuery.Prefix))
+                                {
+                                    if (sectionText.StartsWith(customQuery.Prefix))
+                                        sectionT = sectionText.Remove(0, customQuery.Prefix.Length);
+                                }
+                                else
+                                {
+                                    Debug.LogWarning($"Custom query of {Item.GetType().Name} doesn't have a prefix", (ScriptableObject)Item);
+                                }
+
+                                result = customQuery.Condition(sectionT);
+
+                                if(result) { break; }
+                            }
                         }
 
                         return result || Item.GetValues().ID.ToLower().Contains(sectionText) || Item.GetValues().Name.ToLower().Contains(sectionText);
@@ -122,17 +128,22 @@ namespace Holylib.ItemEditor
 
             foreach (var item in distinctItems)
             {
-                var queryOutput = item.GetCustomSearchLogic();
+                var queryOutputs = item.GetCustomSearchLogic();
 
-                if(queryOutput.Condition == null || string.IsNullOrEmpty(queryOutput.Prefix))
+                if(queryOutputs != null)
+                foreach (var queryOutput in queryOutputs)
                 {
-                    continue;
-                    //Debug.LogWarning($"Custom query of {item.GetType().Name} doesn't have a prefix", (ScriptableObject)item);
-                }
+                    if (queryOutput.Condition == null || string.IsNullOrEmpty(queryOutput.Prefix))
+                    {
+                        continue;
+                        //Debug.LogWarning($"Custom query of {item.GetType().Name} doesn't have a prefix", (ScriptableObject)item);
+                    }
 
-                searchGuide+= 
-                $"\n<b><color=#E57373>{queryOutput.Prefix} - {queryOutput.Name}</color></b>\n" +
-                $"<color=#B0BEC5>   {queryOutput.Description}</color>";
+                    searchGuide +=
+                    $"\n<b><color=#E57373>{queryOutput.Prefix} - {queryOutput.Name}</color></b>\n" +
+                    $"<color=#B0BEC5>   {queryOutput.Description}</color>";
+                }
+                
             }
             return searchGuide;
         }

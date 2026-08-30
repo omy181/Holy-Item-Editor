@@ -47,13 +47,13 @@ namespace Holylib.ItemEditor
                 new[] { scriptableObject });
         }
 
-        public SearchQuery GetCustomSearchLogic()
+        public SearchQuery[] GetCustomSearchLogic()
         {
-            return new(
+            return new SearchQuery[1]{ new(
                 "r/",
                 "Recipe Input", "Search by recipe input",
-                (s) => _ingredientA != null && _ingredientA.Name.ToLower().Contains(s) 
-                || _ingredientB != null && _ingredientB.Name.ToLower().Contains(s));
+                (s) => _ingredientA != null && _ingredientA.Name.ToLower().Contains(s)
+                || _ingredientB != null && _ingredientB.Name.ToLower().Contains(s))};
         }
 #endif
     }

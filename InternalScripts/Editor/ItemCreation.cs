@@ -20,7 +20,7 @@ namespace Holylib.ItemEditor
             var closedMethod = openMethod.MakeGenericMethod(type);
             closedMethod.Invoke(null, new object[] { name, refreshList, path });
         }
-        public static T CreateItem<T>(string name,Action<string> refreshList,string path) where T : ScriptableObject,ItemListElement
+        public static T CreateItem<T>(string name,Action<string> refreshList,string path) where T : ScriptableObject,IItemListElement
         {
 
             var id = $"{typeof(T).Name.ToLower()}_{name.Replace(" ", "").ToLower()}";
@@ -39,7 +39,7 @@ namespace Holylib.ItemEditor
             return newItem;
         }
 
-        public static bool IsValidNameForNewItem(Type type, string name,Func<List<ItemListElement>> getAllItems)
+        public static bool IsValidNameForNewItem(Type type, string name,Func<List<IItemListElement>> getAllItems)
         {
             var openMethod = typeof(ItemCreation)
                 .GetMethods(BindingFlags.Public | BindingFlags.Static)
@@ -48,7 +48,7 @@ namespace Holylib.ItemEditor
             var closedMethod = openMethod.MakeGenericMethod(type);
             return (bool)closedMethod.Invoke(null, new object[] { name, getAllItems });
         }
-        public static bool IsValidNameForNewItem<T>(string name, Func<List<ItemListElement>> getAllItems)
+        public static bool IsValidNameForNewItem<T>(string name, Func<List<IItemListElement>> getAllItems)
         {
             name = $"{typeof(T).Name.ToLower()}_{name.Replace(" ", "").ToLower()}";
 
@@ -57,7 +57,7 @@ namespace Holylib.ItemEditor
             return !allItems.Exists(i => i.GetValues().ID.Equals(name, System.StringComparison.OrdinalIgnoreCase));
         }
 
-        public static void DeleteItem(string id, Action refreshList,Func<List<ItemListElement>> getAllItems)
+        public static void DeleteItem(string id, Action refreshList,Func<List<IItemListElement>> getAllItems)
         {
             try
             {

@@ -1,4 +1,3 @@
-#if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,14 +6,15 @@ using UnityEngine.UIElements;
 
 namespace Holylib.ItemEditor
 {
+#if UNITY_EDITOR
     public class HolySearchEngine
     {
-        private Func<List<ItemListElement>> _getItems;
+        private Func<List<IItemListElement>> _getItems;
         private TextField _inputField;
         private Action<string> _refresh;
         private ItemListElementAndPath[] _itemTypes;
-        private Dictionary<ItemListElement, SearchQuery[]> _searchQueriesByItem;
-        public HolySearchEngine(Func<List<ItemListElement>> getItems,TextField inputField,Action<string> refresh,Button guideButton, ItemListElementAndPath[] itemTypes)
+        private Dictionary<IItemListElement, SearchQuery[]> _searchQueriesByItem;
+        public HolySearchEngine(Func<List<IItemListElement>> getItems,TextField inputField,Action<string> refresh,Button guideButton, ItemListElementAndPath[] itemTypes)
         {
             _getItems = getItems;
             _inputField = inputField;
@@ -33,7 +33,7 @@ namespace Holylib.ItemEditor
             });
         }
 
-        private List<ItemListElement> _getDistinctItems()
+        private List<IItemListElement> _getDistinctItems()
         {
             return _getItems()
                 .GroupBy(item => item.GetType())
@@ -50,12 +50,16 @@ namespace Holylib.ItemEditor
             }
         }
 
-        public List<ItemListElement> GetSearchReults()
+        public void Search(string query)
+        {
+            _inputField.value = query;
+        }
+        public List<IItemListElement> GetSearchReults()
         {
             return _getListElements(_getItems, _inputField.text); 
         }
 
-        private List<ItemListElement> _getListElements(Func<List<ItemListElement>> getItems, string searchText)
+        private List<IItemListElement> _getListElements(Func<List<IItemListElement>> getItems, string searchText)
         {
             var items = getItems();
 
@@ -63,15 +67,15 @@ namespace Holylib.ItemEditor
             return items.FindAll(i => conditions.All(j => j(i)));
         }
 
-        private Func<ItemListElement, bool>[] _textToConditions(string text)
+        private Func<IItemListElement, bool>[] _textToConditions(string text)
         {
-            List<Func<ItemListElement, bool>> conditions = new();
+            List<Func<IItemListElement, bool>> conditions = new();
 
             var sections = text.ToLower().Split(' ');
 
             foreach (var section in sections)
             {
-                Func<ItemListElement, bool> condition = null;
+                Func<IItemListElement, bool> condition = null;
                 bool isNegation = false;
                 string sectionText = section;
 
@@ -177,6 +181,7 @@ namespace Holylib.ItemEditor
         }
     }
 
+#endif
     public struct SearchQuery
     {
         public string Prefix;
@@ -193,4 +198,3 @@ namespace Holylib.ItemEditor
         }
     }
 }
-#endif

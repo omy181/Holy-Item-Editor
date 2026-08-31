@@ -14,7 +14,7 @@ namespace Holylib.ItemEditor
         private Image _itemImage;
         private Label _itemLabel;
         private Action<string> _refreshList;
-        private ItemListElement _currentPreviewedItem;
+        private IItemListElement _currentPreviewedItem;
         private IVisualElementScheduledItem _autoSaveScheduledItem;
         private bool _suppressAutoSave;
         public HolyItemProperties(VisualElement containerParent, Image itemImage,Label itemName,Action<string> refreshList)
@@ -38,7 +38,7 @@ namespace Holylib.ItemEditor
             _autoSaveScheduledItem = _containerParent.schedule.Execute(()=>SaveChanges(false)).StartingIn(300);
         }
 
-        public void PreviewItem(ItemListElement itemListElement)
+        public void PreviewItem(IItemListElement itemListElement)
         {
             if(itemListElement == null)
             {
@@ -82,7 +82,7 @@ namespace Holylib.ItemEditor
             _saveChanges(_currentPreviewedItem.PreviewElement().SerializeObjectsToSave, _currentPreviewedItem, logOnSave);
         }
 
-        private void _saveChanges(SerializedObject[] serializedObjects, ItemListElement itemListElement,bool logOnSave)
+        private void _saveChanges(SerializedObject[] serializedObjects, IItemListElement itemListElement,bool logOnSave)
         {
             foreach (var serializedObject in serializedObjects)
             {

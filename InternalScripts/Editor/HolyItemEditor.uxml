@@ -6,8 +6,8 @@
                 <ui:VisualElement name="TopPanel" class="upper-panel" style="flex-grow: 0; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-right: 0; padding-bottom: 12px; padding-left: 0; flex-shrink: 0;">
                     <ui:VisualElement name="SearchPanel" style="flex-grow: 0; flex-direction: row; flex-shrink: 1; align-content: auto; align-self: stretch; justify-content: flex-start; align-items: auto; width: auto; height: auto; flex-wrap: nowrap;">
                         <ui:TextField label="" placeholder-text="Search" name="SearchField" style="flex-grow: 1;"/>
-                        <ui:Button text="?" name="SearchGuide" tooltip="Search Guide" style="flex-grow: 0; align-self: center; aspect-ratio: 1; height: auto; flex-shrink: 1; justify-content: flex-start; align-items: auto; align-content: stretch;"/>
-                        <ui:Button text="" name="CreateNewButton" icon-image="project://database/Packages/com.unity.render-pipelines.core/Editor/LookDev/Icons/d_Add.png?fileID=21300000&amp;guid=160b197aba549514286b94426ceae589&amp;type=3#d_Add" tooltip="Create New ScriptableObjects" style="flex-grow: 0; align-self: center; aspect-ratio: 1; height: auto; flex-shrink: 1; justify-content: flex-start; align-items: auto; align-content: stretch; -unity-text-align: upper-center; padding-top: 1px; padding-right: 1px; padding-bottom: 1px; padding-left: 1px;"/>
+                        <ui:Button text="?" name="SearchGuide" tooltip="Search Guide" style="flex-grow: 0; align-self: center; aspect-ratio: 1; height: auto; flex-shrink: 1; justify-content: flex-start; align-items: auto; align-content: stretch; margin-right: 1px; margin-left: 1px;"/>
+                        <ui:Button text="+" name="CreateNewButton" icon-image="" tooltip="Create New ScriptableObjects" style="flex-grow: 0; align-self: center; aspect-ratio: 1; height: auto; flex-shrink: 1; justify-content: flex-start; align-items: auto; align-content: stretch; padding-top: 5px; padding-right: 5px; padding-bottom: 5px; padding-left: 5px; margin-left: 1px; margin-right: 1px;"/>
                     </ui:VisualElement>
                 </ui:VisualElement>
                 <ui:ListView name="ItemListView" style="flex-grow: 1; flex-shrink: 1; min-height: 0; max-height: none;"/>
@@ -23,7 +23,7 @@
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="ListButtons" class="upper-panel" style="flex-grow: 0; flex-direction: row-reverse; position: relative; right: auto; bottom: 0; top: auto; left: auto; flex-shrink: 1; margin-top: 6px; margin-right: 6px; margin-bottom: 6px; margin-left: 6px; min-height: 20px; align-self: stretch; justify-content: flex-start; align-items: stretch;">
-            <ui:Button text="" name="RefreshListButton" icon-image="project://database/Packages/com.unity.render-pipelines.core/Editor/LookDev/Icons/d_Rotation.png?fileID=21300000&amp;guid=abc6ce87642c5c1478a4b107d1c5688a&amp;type=3#d_Rotation" tooltip="Refresh Items" style="flex-shrink: 0; flex-direction: column; flex-grow: 0; margin-bottom: 0; margin-top: 0; min-height: 20px; background-image: none; padding-top: 3px; padding-bottom: 3px;"/>
+            <ui:Button text="↻" name="RefreshListButton" icon-image="" tooltip="Refresh Items" style="flex-shrink: 0; flex-direction: column; flex-grow: 0; margin-bottom: 0; margin-top: 0; min-height: 20px; background-image: none; padding-top: 3px; padding-bottom: 3px;"/>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

@@ -11,21 +11,21 @@ namespace Holylib.ItemEditor
     public class HolyItemList
     {
         private ListView _listView;
-        private Func<List<ItemListElement>> _getListOfSearched;
-        private Func<List<ItemListElement>> _getListOfAllItems;
+        private Func<List<IItemListElement>> _getListOfSearched;
+        private Func<List<IItemListElement>> _getListOfAllItems;
         private Action _refreshItemsCache;
         private ItemListElementAndPath[] _supportedItemListTypes;
         private Action<Type, string, Action<string>, string> _onItemCreated;
         public HolyItemList(ListView listView,
-            Func<List<ItemListElement>> getListOfSearched,
-            Action<ItemListElement> onItemSelected,
+            Func<List<IItemListElement>> getListOfSearched,
+            Action<IItemListElement> onItemSelected,
             Button createNewButton,
             Action<Type, string, Action<string>,string> onItemCreated,
-            Func<Type,string, Func<List<ItemListElement>>, bool> isValidNameForItem,
-            Action<string, Action, Func<List<ItemListElement>>> deleteItem, 
+            Func<Type,string, Func<List<IItemListElement>>, bool> isValidNameForItem,
+            Action<string, Action, Func<List<IItemListElement>>> deleteItem, 
             ItemListElementAndPath[] supportedItemListTypes,
             Action refreshItemsCache,
-            Func<List<ItemListElement>> getListOfAll,
+            Func<List<IItemListElement>> getListOfAll,
             ListManiplutator[] listManiplutors)
         {
             _listView = listView;
@@ -62,7 +62,7 @@ namespace Holylib.ItemEditor
 
                 // Manipulators
 
-                ItemListElement currentItem = null;
+                IItemListElement currentItem = null;
 
                 foreach (var maniplutator in listManiplutors)
                 {
@@ -84,7 +84,7 @@ namespace Holylib.ItemEditor
                 }));
 
 
-                listItem.userData = (Action<ItemListElement>)(item => currentItem = item);
+                listItem.userData = (Action<IItemListElement>)(item => currentItem = item);
                 return listItem;
             };
 
@@ -97,12 +97,12 @@ namespace Holylib.ItemEditor
                 element.Q<Image>("icon").sprite = itemData.GetValues().Icon;
                 element.Q<Label>().text = itemData.GetValues().Name;
 
-                ((Action<ItemListElement>)element.userData)(itemData);
+                ((Action<IItemListElement>)element.userData)(itemData);
             };
 
             listView.selectionChanged += (item) =>
             {
-                onItemSelected(item.Count() > 0 ? item.First() as ItemListElement : null);
+                onItemSelected(item.Count() > 0 ? item.First() as IItemListElement : null);
             };
 
 
@@ -128,7 +128,7 @@ namespace Holylib.ItemEditor
             
         }
 
-        private void _addManipulator(VisualElement listItem,Func<ItemListElement> getCurrentItem, ListManiplutator maniplutator)
+        private void _addManipulator(VisualElement listItem,Func<IItemListElement> getCurrentItem, ListManiplutator maniplutator)
         {
             listItem.AddManipulator(new ContextualMenuManipulator((evt) =>
             {
@@ -143,7 +143,7 @@ namespace Holylib.ItemEditor
                 );
             }));
         }
-        private ItemListElementAndPath _findItemType(ItemListElement element)
+        private ItemListElementAndPath _findItemType(IItemListElement element)
         {
             foreach (var typeData in _supportedItemListTypes)
             {
@@ -185,73 +185,12 @@ namespace Holylib.ItemEditor
             }
         }
 
-        public ItemListElement GetItemListElementByID(string id)
+        public IItemListElement GetItemListElementByID(string id)
         {
             var items = _getListOfSearched();
             return items.Find(i => i.GetValues().ID == id);
         }
     }
 
-    /// <summary>
-    /// This interface is assumed to be put on ScriptableObjects
-    /// </summary>
-    public interface ItemListElement
-    {
-        public ItemListData GetValues();
-        public void InitializeValues(string id, string name);
-        public ElementPreviewData PreviewElement();
-        public SearchQuery[] GetCustomSearchLogic();
-    }
-
-    public struct ItemListData
-    {
-        public string ID;
-        public string Name;
-        public Sprite Icon;
-
-        public ItemListData(string iD, string name, Sprite icon)
-        {
-            ID = iD;
-            Name = name;
-            Icon = icon;
-        }
-    }
-    public struct ElementPreviewData
-    {
-        public VisualElement PropertyInspector;
-        public SerializedObject[] SerializeObjectsToSave;
-
-        public ElementPreviewData(VisualElement propertyInspector, SerializedObject[] serializeObjectsToSave)
-        {
-            PropertyInspector = propertyInspector;
-            SerializeObjectsToSave = serializeObjectsToSave;
-        }
-    }
-
-    public struct ItemListElementAndPath
-    {
-        public Type Type;
-        public string SavePath;
-        public Color Color;
-
-        public ItemListElementAndPath(Type type, string savePath,Color color)
-        {
-            Type = type;
-            SavePath = savePath;
-            Color = color;
-        }
-    }
-
-    public struct ListManiplutator
-    {
-        public string ManiplutatorName;
-        public Action<Vector2, ItemListElement> OnClicked; // Mouse Position On Click
-
-        public ListManiplutator(string maniplutatorName, Action<Vector2, ItemListElement> onClicked)
-        {
-            ManiplutatorName = maniplutatorName;
-            OnClicked = onClicked;
-        }
-    }
 }
 #endif

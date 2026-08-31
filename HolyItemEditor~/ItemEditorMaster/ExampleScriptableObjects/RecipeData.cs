@@ -10,7 +10,7 @@ namespace Holylib.ItemEditor
 {
 
     [CreateAssetMenu(fileName = "RecipeData", menuName = "Holylib/RecipeData")]
-    public class RecipeData : ScriptableObject, ItemListElement
+    public class RecipeData : ScriptableObject, IItemListElement
     {
         [SerializeField] private string _id;
         public string ID => _id;
@@ -46,16 +46,16 @@ namespace Holylib.ItemEditor
                 vis,
                 new[] { scriptableObject });
         }
-
+#endif
         public SearchQuery[] GetCustomSearchLogic()
         {
             return new SearchQuery[1]{ new(
                 "r/",
                 "Recipe Input", "Search by recipe input",
-                (s) => _ingredientA != null && _ingredientA.Name.ToLower().Contains(s)
-                || _ingredientB != null && _ingredientB.Name.ToLower().Contains(s))};
+                (s) => (_ingredientA != null && _ingredientA.GetValues().Name.ToLower().Contains(s))
+                || (_ingredientB != null && _ingredientB.GetValues().Name.ToLower().Contains(s)))};
         }
-#endif
+
     }
 
 }

@@ -1,8 +1,9 @@
 #if UNITY_EDITOR
 using System.Linq;
 using UnityEditor;
-using UnityEditor.ShortcutManagement;
 using UnityEditor.Callbacks;
+using UnityEditor.SearchService;
+using UnityEditor.ShortcutManagement;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -13,6 +14,7 @@ namespace Holylib.ItemEditor
         [SerializeField]
         private HolyItemList _listView;
         private HolyItemProperties _itemProperties;
+        private HolySearchEngine _searchEngine;
 
         [MenuItem("Tools/Holylib/HolyItemEditor")]
         public static void OpenWindow()
@@ -47,7 +49,7 @@ namespace Holylib.ItemEditor
                 root.Q<Label>("ItemName"),
                 (s)=>_listView.RefreshList(s));
 
-            HolySearchEngine searchEngine = new(
+            _searchEngine = new(
                 ItemManagementReferences.GetAListOfAllItems,
                 root.Q<TextField>("SearchField"),
                 (s) => _listView.RefreshList(s),
@@ -56,7 +58,7 @@ namespace Holylib.ItemEditor
 
             _listView = new(
                 root.Q<ListView>("ItemListView"),
-                searchEngine.GetSearchReults,
+                _searchEngine.GetSearchReults,
                 _itemProperties.PreviewItem,
                 root.Q<Button>("CreateNewButton"),
                 ItemCreation.CreateItem,
@@ -80,7 +82,7 @@ namespace Holylib.ItemEditor
             {
                 if (typeData.Type.IsInstanceOfType(obj))
                 {
-                    var item = (ItemListElement)obj;
+                    var item = (IItemListElement)obj;
 
                     var wnd = GetWindow<HolyItemEditor>();
                     wnd.Focus();

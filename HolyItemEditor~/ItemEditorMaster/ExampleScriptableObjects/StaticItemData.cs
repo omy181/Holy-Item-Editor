@@ -10,7 +10,7 @@ namespace Holylib.ItemEditor
 {
 
     [CreateAssetMenu(fileName = "StaticItemData", menuName = "Holylib/StaticItemData")]
-    public class StaticItemData : ScriptableObject, ItemListElement
+    public class StaticItemData : ScriptableObject, IItemListElement
     {
         [SerializeField] private string _id;
         public string ID => _id;
@@ -39,12 +39,12 @@ namespace Holylib.ItemEditor
                 new InspectorElement(scriptableObject),
                 new[] { scriptableObject });
         }
-
+#endif
         public SearchQuery[] GetCustomSearchLogic()
         {
             return null;
         }
-#endif
+
     }
 
 }

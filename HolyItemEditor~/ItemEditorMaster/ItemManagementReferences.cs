@@ -11,7 +11,7 @@ namespace Holylib.ItemEditor
     {
         public static readonly ItemListElementAndPath[] SupportedItemListTypes = { 
             new( typeof(StaticItemData), "Assets/Resources/Items",Color.azure), 
-            new( typeof(RecipeData), "Assets/Resources/Recipes",Color.yellow) };
+            new( typeof(RecipeData), "Assets/Resources/Recipes",Color.yellow), };
 
         private static string[] GetSearchFolders()
         {
@@ -20,7 +20,7 @@ namespace Holylib.ItemEditor
             return supportedItemsList.ToArray();
         }
         
-        public static List<ItemListElement> GetAListOfAllItems()
+        public static List<IItemListElement> GetAListOfAllItems()
         {
             return ItemManagement.GetListOfAllItems();
         }

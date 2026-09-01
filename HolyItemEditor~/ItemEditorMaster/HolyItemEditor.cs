@@ -1,8 +1,6 @@
 #if UNITY_EDITOR
-using System.Linq;
 using UnityEditor;
 using UnityEditor.Callbacks;
-using UnityEditor.SearchService;
 using UnityEditor.ShortcutManagement;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -54,7 +52,9 @@ namespace Holylib.ItemEditor
                 root.Q<TextField>("SearchField"),
                 (s) => _listView.RefreshList(s),
                 root.Q<Button>("SearchGuide"),
-                ItemManagementReferences.SupportedItemListTypes);
+                ItemManagementReferences.SupportedItemListTypes,
+                root.Q<Button>("SearchPresets"),
+                ItemManagementReferences.GetCustomSearchPresets());
 
             _listView = new(
                 root.Q<ListView>("ItemListView"),

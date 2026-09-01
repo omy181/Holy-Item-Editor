@@ -194,7 +194,7 @@ namespace Holylib.ItemEditor
         private const float ButtonSpacing = 2f;
         private const float ButtonHorizontalPadding = 50f; 
         private const float WindowPadding = 10f;
-
+        private string _message;
         public static void Show(string title, List<(string name, Action onClick)> buttons)
         {
             var wnd = CreateInstance<MenuPopup>();
@@ -220,6 +220,7 @@ namespace Holylib.ItemEditor
 
             Vector2 windowSize = new Vector2(contentWidth, contentHeight) + new Vector2(WindowPadding * 2, WindowPadding * 2);
 
+            wnd._message = title;
             wnd.ShowPopup();
             wnd.position = new Rect(
                 GUIUtility.GUIToScreenPoint(Event.current.mousePosition),
@@ -246,7 +247,7 @@ namespace Holylib.ItemEditor
             _buttonsContainer.style.alignItems = Align.Stretch;
             _buttonsContainer.style.flexGrow = 1;
 
-            var title = new Label("Create New");
+            var title = new Label(_message);
             title.style.alignSelf = Align.Center;
             title.style.paddingBottom = 4;
             root.Add(title);
@@ -258,7 +259,7 @@ namespace Holylib.ItemEditor
                 var button = _buttons[i];
                 var nb = new Button();
                 nb.text = button.name;
-                nb.RegisterCallback<MouseUpEvent>((e) => button.onClick());
+                nb.RegisterCallback<MouseUpEvent>((e) => { button.onClick(); Close(); });
 
                 if (i < _buttons.Count - 1)
                     nb.style.marginBottom = ButtonSpacing;

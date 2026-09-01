@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor.Presets;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -13,13 +14,15 @@ namespace Holylib.ItemEditor
         private TextField _inputField;
         private Action<string> _refresh;
         private ItemListElementAndPath[] _itemTypes;
+        private SearchPreset[] _customSearchPresets;
         private Dictionary<IItemListElement, SearchQuery[]> _searchQueriesByItem;
-        public HolySearchEngine(Func<List<IItemListElement>> getItems,TextField inputField,Action<string> refresh,Button guideButton, ItemListElementAndPath[] itemTypes)
+        public HolySearchEngine(Func<List<IItemListElement>> getItems,TextField inputField,Action<string> refresh,Button guideButton, ItemListElementAndPath[] itemTypes,Button searchPresetsButton, SearchPreset[] customSearchPresets)
         {
             _getItems = getItems;
             _inputField = inputField;
             _refresh = refresh;
             _itemTypes = itemTypes;
+            _customSearchPresets = customSearchPresets;
             _setupSearchQueries();
 
             _inputField.RegisterCallback<ChangeEvent<string>>((v) =>
@@ -31,6 +34,29 @@ namespace Holylib.ItemEditor
             {
                 MessagePopup.Show(_getSearchGuide());
             });
+
+            searchPresetsButton.RegisterCallback<MouseUpEvent>((e) =>
+            {
+                MenuPopup.Show("Search", _getSearchPresets());
+            });
+        }
+
+        private List<(string name,Action onClick)> _getSearchPresets()
+        {
+            List<(string name, Action onClick)> list = new();
+
+            foreach (var itemType in _itemTypes)
+            {
+                string query = $"{_typePrefix}{itemType.Type.Name}";
+                list.Add(new(query, () => Search(query)));
+            }
+
+            foreach (var preset in _customSearchPresets)
+            {
+                list.Add(new(preset.Query,()=>Search(preset.Query)));
+            }
+
+            return list;
         }
 
         private List<IItemListElement> _getDistinctItems()
@@ -67,6 +93,8 @@ namespace Holylib.ItemEditor
             return items.FindAll(i => conditions.All(j => j(i)));
         }
 
+        private string _typePrefix = "/";
+        private string _negatePrefix = "!";
         private Func<IItemListElement, bool>[] _textToConditions(string text)
         {
             List<Func<IItemListElement, bool>> conditions = new();
@@ -79,13 +107,13 @@ namespace Holylib.ItemEditor
                 bool isNegation = false;
                 string sectionText = section;
 
-                if (sectionText.StartsWith("!"))    // Negate Condition
+                if (sectionText.StartsWith(_negatePrefix))    // Negate Condition
                 {
                     isNegation = true;
                     sectionText = sectionText.Remove(0, 1);
                 }
 
-                if(sectionText.StartsWith("/"))  // Type Condition
+                if(sectionText.StartsWith(_typePrefix))  // Type Condition
                 {
                     sectionText = sectionText.Remove(0, 1);
 
@@ -179,22 +207,10 @@ namespace Holylib.ItemEditor
             }
             return searchGuide;
         }
+
+        
     }
 
 #endif
-    public struct SearchQuery
-    {
-        public string Prefix;
-        public string Name;
-        public string Description;
-        public Func<string, bool> Condition;
 
-        public SearchQuery(string prefix,string name, string description, Func<string, bool> condition)
-        {
-            Prefix = prefix;
-            Name = name;
-            Description = description;
-            Condition = condition;
-        }
-    }
 }

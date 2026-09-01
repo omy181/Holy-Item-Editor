@@ -1,7 +1,9 @@
 {
     "name": "HolyItemEditor",
     "rootNamespace": "",
-    "references": [],
+    "references": [
+        "GUID:9d7bb49054ccf7e44bfd4718888abaf7"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

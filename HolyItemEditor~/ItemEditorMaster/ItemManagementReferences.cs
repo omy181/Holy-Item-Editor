@@ -37,6 +37,11 @@ namespace Holylib.ItemEditor
             };
         }
 
+        public static SearchPreset[] GetCustomSearchPresets()
+        {
+            return new SearchPreset[0] {};
+        }
+
     }
 }
 #endif

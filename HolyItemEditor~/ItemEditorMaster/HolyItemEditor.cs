@@ -87,7 +87,7 @@ namespace Holylib.ItemEditor
 
                     var wnd = GetWindow<HolyItemEditor>();
                     wnd.Focus();
-                    wnd._itemProperties.PreviewItem(wnd._listView.GetItemListElementByID(item.GetValues().ID));
+                    wnd._itemProperties.PreviewItem(wnd._listView.GetItemListElementByID(item.GetID()));
                     return true;
                 }
             }

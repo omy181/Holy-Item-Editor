@@ -80,7 +80,7 @@ namespace Holylib.ItemEditor
 
                 _addManipulator(listItem,()=>currentItem,new("Delete Item",
                     (mousePos, item) => {
-                        DeleteItemPopup.Show(item.GetValues().Name, mousePos, () => deleteItem(item.GetValues().ID, () => RefreshItemsCacheAndList(), _getListOfAllItems));
+                        DeleteItemPopup.Show(item.GetValues().Name, mousePos, () => deleteItem(item.GetID(), () => RefreshItemsCacheAndList(), _getListOfAllItems));
                 }));
 
 
@@ -171,7 +171,7 @@ namespace Holylib.ItemEditor
             var items = _getListOfSearched();
             _listView.itemsSource = items;
             _listView.RefreshItems();
-            var index = string.IsNullOrEmpty(id) ? -1 : items.IndexOf(items.Find(i => i.GetValues().ID == id));
+            var index = string.IsNullOrEmpty(id) ? -1 : items.IndexOf(items.Find(i => i.GetID() == id));
 
             _listView.SetSelectionWithoutNotify(new int[] { });
 
@@ -188,7 +188,7 @@ namespace Holylib.ItemEditor
         public IItemListElement GetItemListElementByID(string id)
         {
             var items = _getListOfSearched();
-            return items.Find(i => i.GetValues().ID == id);
+            return items.Find(i => i.GetID() == id);
         }
     }
 

@@ -23,11 +23,12 @@ namespace Holylib.ItemEditor
         public static T CreateItem<T>(string name,Action<string> refreshList,string path) where T : ScriptableObject,IItemListElement
         {
 
-            var id = $"{typeof(T).Name.ToLower()}_{name.Replace(" ", "").ToLower()}";
             var newItem = ScriptableObject.CreateInstance<T>();
-            newItem.InitializeValues(id,name);
+            newItem.InitializeValues(name);
 
-            if(!Directory.Exists(path))
+            var id = newItem.GetID();
+
+            if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
 
             AssetDatabase.CreateAsset(newItem, $"{path}/{id}.asset");
@@ -54,14 +55,14 @@ namespace Holylib.ItemEditor
 
             var allItems = getAllItems.Invoke();
 
-            return !allItems.Exists(i => i.GetValues().ID.Equals(name, System.StringComparison.OrdinalIgnoreCase));
+            return !allItems.Exists(i => i.GetID().Equals(name, System.StringComparison.OrdinalIgnoreCase));
         }
 
         public static void DeleteItem(string id, Action refreshList,Func<List<IItemListElement>> getAllItems)
         {
             try
             {
-                var item = getAllItems().Find(i => i.GetValues().ID == id);
+                var item = getAllItems().Find(i => i.GetID() == id);
 
                 var path = AssetDatabase.GetAssetPath((ScriptableObject)item);
                 AssetDatabase.DeleteAsset(path);

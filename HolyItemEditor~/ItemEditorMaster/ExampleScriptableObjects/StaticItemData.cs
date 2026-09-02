@@ -21,14 +21,14 @@ namespace Holylib.ItemEditor
         [SerializeField] private bool _isInGame;
         public bool IsIngame => _isInGame;
 
-        public void InitializeValues(string id,string name)
+        public void InitializeValues(string name)
         {
-            _id = id;
+            _id = name.ToLower().Replace(" ","");
             _name = name;
             _isInGame = true;
         }
 
-        public ItemListData GetValues() => new(ID,Name,Icon);
+        public ItemListData GetValues() => new(Name,Icon);
 
 #if UNITY_EDITOR
         public ElementPreviewData PreviewElement()

@@ -33,7 +33,7 @@ namespace Holylib.ItemEditor
         public static ListManiplutator[] GetManiplutators() {
             return new ListManiplutator[] {
                 new("Test Print Item Name",
-                (e,i)=>Debug.Log($"{i.GetValues().ID}"))
+                (e,i)=>Debug.Log($"{i.GetValues().Name}"))
             };
         }
 

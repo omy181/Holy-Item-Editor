@@ -16,7 +16,7 @@ namespace Holylib.ItemEditor
     public interface IItemListElement
     {
         public ItemListData GetValues();
-        public void InitializeValues(string id, string name);
+        public void InitializeValues(string name);
 
 #if UNITY_EDITOR
         public ElementPreviewData PreviewElement()
@@ -34,13 +34,11 @@ namespace Holylib.ItemEditor
 
     public struct ItemListData
     {
-        public string ID;
         public string Name;
         public Sprite Icon;
 
-        public ItemListData(string iD, string name, Sprite icon)
+        public ItemListData(string name, Sprite icon)
         {
-            ID = iD;
             Name = name;
             Icon = icon;
         }
@@ -108,6 +106,14 @@ namespace Holylib.ItemEditor
         public SearchPreset(string query)
         {
             Query = query;
+        }
+    }
+
+    public static class HolyItemEditorHelper
+    {
+        public static string GetID(this IItemListElement element)
+        {
+            return ((ScriptableObject)element).GetType().ToString() +"_" + element.GetValues().Name.ToLower().Replace(" ","");
         }
     }
 }

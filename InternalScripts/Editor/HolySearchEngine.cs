@@ -165,7 +165,7 @@ namespace Holylib.ItemEditor
                             }
                         }
 
-                        return result || Item.GetValues().ID.ToLower().Contains(sectionText);
+                        return result || Item.GetValues().Name.ToLower().Replace(" ","").Contains(sectionText);
                     };
                 }
                 

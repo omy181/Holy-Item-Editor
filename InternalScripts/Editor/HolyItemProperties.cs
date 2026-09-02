@@ -28,7 +28,8 @@ namespace Holylib.ItemEditor
 
             _containerParent.RegisterCallback<SerializedPropertyChangeEvent>(_onPropertyChanged);
 
-            autoSave.value = EditorPrefs.GetBool(_autoSaveKey, _isAutoSaveEnabled);
+            _isAutoSaveEnabled = EditorPrefs.GetBool(_autoSaveKey, _isAutoSaveEnabled);
+            autoSave.value = _isAutoSaveEnabled;
             autoSave.RegisterValueChangedCallback((e)=>_onAutoSaveChanged(e.newValue));
 
             PreviewItem();
@@ -104,7 +105,7 @@ namespace Holylib.ItemEditor
             
             AssetDatabase.SaveAssets();
 
-            _refreshList(itemListElement.GetValues().ID);
+            _refreshList(itemListElement.GetID());
 
             if(logOnSave)
             Debug.Log("Changes saved for "+itemListElement.GetValues().Name);

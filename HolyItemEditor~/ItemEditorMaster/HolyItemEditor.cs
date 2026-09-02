@@ -45,7 +45,8 @@ namespace Holylib.ItemEditor
                 root.Q<VisualElement>("PropertiesContent"),
                 root.Q<Image>("ItemImage"),
                 root.Q<Label>("ItemName"),
-                (s)=>_listView.RefreshList(s));
+                (s)=>_listView.RefreshList(s),
+                root.Q<Toggle>("AutoSave"));
 
             _searchEngine = new(
                 ItemManagementReferences.GetAListOfAllItems,

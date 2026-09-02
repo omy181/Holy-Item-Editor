@@ -17,7 +17,9 @@ namespace Holylib.ItemEditor
         private IItemListElement _currentPreviewedItem;
         private IVisualElementScheduledItem _autoSaveScheduledItem;
         private bool _suppressAutoSave;
-        public HolyItemProperties(VisualElement containerParent, Image itemImage,Label itemName,Action<string> refreshList)
+        private bool _isAutoSaveEnabled = true;
+        private string _autoSaveKey = "AutoSaveItems";
+        public HolyItemProperties(VisualElement containerParent, Image itemImage,Label itemName,Action<string> refreshList,Toggle autoSave)
         {
             _itemImage = itemImage;
             _itemLabel = itemName;
@@ -26,13 +28,23 @@ namespace Holylib.ItemEditor
 
             _containerParent.RegisterCallback<SerializedPropertyChangeEvent>(_onPropertyChanged);
 
+            autoSave.value = EditorPrefs.GetBool(_autoSaveKey, _isAutoSaveEnabled);
+            autoSave.RegisterValueChangedCallback((e)=>_onAutoSaveChanged(e.newValue));
+
             PreviewItem();
+        }
+
+        private void _onAutoSaveChanged(bool state)
+        {
+            EditorPrefs.SetBool(_autoSaveKey, state);
+            _isAutoSaveEnabled = state;
         }
 
         private void _onPropertyChanged(SerializedPropertyChangeEvent evt)
         {
             if (_currentPreviewedItem == null) return;
             if (_suppressAutoSave) return;
+            if (!_isAutoSaveEnabled) return;
 
             _autoSaveScheduledItem?.Pause();
             _autoSaveScheduledItem = _containerParent.schedule.Execute(()=>SaveChanges(false)).StartingIn(300);

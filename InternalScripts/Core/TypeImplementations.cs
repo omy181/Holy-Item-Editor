@@ -115,9 +115,7 @@ namespace Holylib.ItemEditor
     [Serializable]
     public class ItemCaptureSettings
     {
-        public float Pitch = .5f;
-        public float Yaw = .5f;
-        public float Roll = .5f;
+        public Quaternion Rotation = Quaternion.identity;
         public float HorizontalOffset = .5f;
         public float VerticalOffset = .5f;
         public float ZoomFactor = .5f;

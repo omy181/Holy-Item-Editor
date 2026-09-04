@@ -1,24 +1,10 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
     <Style src="project://database/Packages/dev.holyperson.holyitemeditor/InternalScripts/Editor/HolyItemEditor.uss?fileID=7433441132597879392&amp;guid=7c4d90d7a5f9e944ab9e664a179cbab7&amp;type=3#HolyItemEditor"/>
-    <ui:VisualElement name="Root" style="flex-grow: 1;">
+    <ui:VisualElement name="Root" style="flex-grow: 1; padding-top: 8px; padding-right: 8px; padding-bottom: 8px; padding-left: 8px;">
         <ui:Label text="Preview" name="Title" style="align-self: center; font-size: 22px;"/>
-        <ui:VisualElement name="Image" style="flex-grow: 0; justify-content: space-around; flex-direction: row;">
+        <ui:VisualElement name="Image" tooltip="Hold LMB - Rotate, Hold RMB - Offset, Scroll - Zoom" style="flex-grow: 0; justify-content: space-around; flex-direction: row; padding-top: 8px; padding-right: 8px; padding-bottom: 8px; padding-left: 8px;">
             <ui:Image name="IconPreview" style="aspect-ratio: 1; align-self: auto; flex-grow: 0; flex-shrink: 1; max-height: 256px; border-top-width: 4px; border-right-width: 4px; border-bottom-width: 4px; border-left-width: 4px; border-left-color: rgb(34, 34, 34); border-right-color: rgb(34, 34, 34); border-top-color: rgb(34, 34, 34); border-bottom-color: rgb(34, 34, 34); border-top-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px;"/>
         </ui:VisualElement>
-        <ui:ScrollView name="Settings">
-            <ui:VisualElement name="Rotation" style="flex-grow: 0;">
-                <ui:Label text="Rotation" name="RotationTitle" style="align-self: center; font-size: 18px;"/>
-                <ui:Slider label="Pitch" value="0.5" high-value="1" name="PitchSlider"/>
-                <ui:Slider label="Yaw" value="0.5" high-value="1" name="YawSlider"/>
-                <ui:Slider label="Roll" value="0.5" high-value="1" name="RollSlider"/>
-            </ui:VisualElement>
-            <ui:VisualElement name="Offset" style="flex-grow: 0;">
-                <ui:Label text="Offset" name="OffsetTitle" style="align-self: center; font-size: 18px;"/>
-                <ui:Slider label="Horizontal" value="0.5" high-value="1" name="HorizontalSlider"/>
-                <ui:Slider label="Vertical" value="0.5" high-value="1" name="VerticalSlider"/>
-                <ui:Slider label="Zoom" value="0.5" high-value="1" name="ZoomSlider"/>
-            </ui:VisualElement>
-        </ui:ScrollView>
         <ui:Button text="Update Icon" name="UpdateIcon"/>
     </ui:VisualElement>
 </ui:UXML>

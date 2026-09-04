@@ -17,7 +17,7 @@ namespace Holylib.ItemEditor
         private ModelPreviewer _modelPreviewer;
         private Action _updateControls;
 
-        public IconCaptureModule(VisualElement root, GameObject itemModel, ItemCaptureSettings settings, Action<Sprite> onIconCaptured, string captureIconPath,out Action disposeUI)
+        public IconCaptureModule(VisualElement root, GameObject itemModel, ItemCaptureSettings settings, Action<Sprite> onIconCaptured, string captureIconPath,out Action disposeUI,bool hideUpdateSpriteButton = false)
         {
             if(itemModel == null)
             {
@@ -32,7 +32,7 @@ namespace Holylib.ItemEditor
                 _settings = settings;
 
                 _instantiateUI(root);
-                _makeUIElementConnections(root, out Image previewImage);
+                _makeUIElementConnections(root, out Image previewImage, hideUpdateSpriteButton);
                 _modelPreviewer = new(previewImage, itemModel, _settings, IconTextureSize, _captureIconPath, _onIconCaptured, _updateControls);
 
                 disposeUI = _modelPreviewer.Dispose;
@@ -47,7 +47,7 @@ namespace Holylib.ItemEditor
             var uxmlRoot = visualTree.Instantiate();
             root.Add(uxmlRoot);
         }
-        private void _makeUIElementConnections(VisualElement root, out Image previewImage)
+        private void _makeUIElementConnections(VisualElement root, out Image previewImage,bool hideUpdateButton)
         {
             previewImage = root.Q<Image>("IconPreview");
             Button updateIconButton = root.Q<Button>("UpdateIcon");
@@ -57,6 +57,8 @@ namespace Holylib.ItemEditor
             _updateControls?.Invoke();
 
             updateIconButton.clicked += SaveIcon;
+
+            updateIconButton.style.display = hideUpdateButton ? DisplayStyle.None : DisplayStyle.Flex;
         }
 
         public void SaveIcon()

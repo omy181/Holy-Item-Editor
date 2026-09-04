@@ -37,7 +37,8 @@ namespace Holylib.ItemEditor
 
             return new ElementPreviewData(
                 new InspectorElement(scriptableObject),
-                new[] { scriptableObject });
+                new[] { scriptableObject },
+                null);
         }
 #endif
         public SearchQuery[] GetCustomSearchLogic()

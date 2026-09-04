@@ -26,7 +26,8 @@ namespace Holylib.ItemEditor
 
             return new ElementPreviewData(
                 new InspectorElement(scriptableObject),
-                new[] { scriptableObject });
+                new[] { scriptableObject },
+                null);
         }
 #endif
         public SearchQuery[] GetCustomSearchLogic();
@@ -48,11 +49,13 @@ namespace Holylib.ItemEditor
 #if UNITY_EDITOR
         public VisualElement PropertyInspector;
         public SerializedObject[] SerializeObjectsToSave;
+        public Action Dispose; // called when this ui is no longer displayed
 
-        public ElementPreviewData(VisualElement propertyInspector, SerializedObject[] serializeObjectsToSave)
+        public ElementPreviewData(VisualElement propertyInspector, SerializedObject[] serializeObjectsToSave,Action dispose)
         {
             PropertyInspector = propertyInspector;
             SerializeObjectsToSave = serializeObjectsToSave;
+            Dispose = dispose;
         }
 #endif
     }
@@ -107,6 +110,17 @@ namespace Holylib.ItemEditor
         {
             Query = query;
         }
+    }
+
+    [Serializable]
+    public class ItemCaptureSettings
+    {
+        public float Pitch = .5f;
+        public float Yaw = .5f;
+        public float Roll = .5f;
+        public float HorizontalOffset = .5f;
+        public float VerticalOffset = .5f;
+        public float ZoomFactor = .5f;
     }
 
     public static class HolyItemEditorHelper

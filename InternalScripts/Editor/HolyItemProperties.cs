@@ -14,17 +14,19 @@ namespace Holylib.ItemEditor
         private Image _itemImage;
         private Label _itemLabel;
         private Action<string> _refreshList;
+        private Action _disposeLastElement;
         private IItemListElement _currentPreviewedItem;
         private IVisualElementScheduledItem _autoSaveScheduledItem;
         private bool _suppressAutoSave;
         private bool _isAutoSaveEnabled = true;
         private string _autoSaveKey = "AutoSaveItems";
-        public HolyItemProperties(VisualElement containerParent, Image itemImage,Label itemName,Action<string> refreshList,Toggle autoSave)
+        public HolyItemProperties(VisualElement containerParent, Image itemImage,Label itemName,Action<string> refreshList,Toggle autoSave,out Action dispose)
         {
             _itemImage = itemImage;
             _itemLabel = itemName;
             _containerParent = containerParent;
             _refreshList = refreshList;
+            dispose = () => _disposeLastElement?.Invoke();
 
             _containerParent.RegisterCallback<SerializedPropertyChangeEvent>(_onPropertyChanged);
 
@@ -62,8 +64,9 @@ namespace Holylib.ItemEditor
             _autoSaveScheduledItem?.Pause();
             _suppressAutoSave = true;
 
-
+            _disposeLastElement?.Invoke();
             ElementPreviewData elementPreviewData = itemListElement.PreviewElement();
+            _disposeLastElement = elementPreviewData.Dispose;
 
             _containerParent.Clear();
 
@@ -81,6 +84,8 @@ namespace Holylib.ItemEditor
 
         public void PreviewItem()
         {
+            _disposeLastElement?.Invoke();
+            _disposeLastElement = null;
             _containerParent.Clear();
             _itemImage.sprite = null;
             _itemImage.style.display = DisplayStyle.None;

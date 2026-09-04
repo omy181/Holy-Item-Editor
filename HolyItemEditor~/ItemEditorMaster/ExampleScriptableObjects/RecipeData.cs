@@ -44,7 +44,8 @@ namespace Holylib.ItemEditor
 
             return new ElementPreviewData(
                 vis,
-                new[] { scriptableObject });
+                new[] { scriptableObject },
+                null);
         }
 #endif
         public SearchQuery[] GetCustomSearchLogic()

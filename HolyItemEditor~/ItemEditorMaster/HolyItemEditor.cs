@@ -1,4 +1,5 @@
 #if UNITY_EDITOR
+using System;
 using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEditor.ShortcutManagement;
@@ -13,6 +14,7 @@ namespace Holylib.ItemEditor
         private HolyItemList _listView;
         private HolyItemProperties _itemProperties;
         private HolySearchEngine _searchEngine;
+        private Action _disposeProperties;
 
         [MenuItem("Tools/Holylib/HolyItemEditor")]
         public static void OpenWindow()
@@ -46,7 +48,8 @@ namespace Holylib.ItemEditor
                 root.Q<Image>("ItemImage"),
                 root.Q<Label>("ItemName"),
                 (s)=>_listView.RefreshList(s),
-                root.Q<Toggle>("AutoSave"));
+                root.Q<Toggle>("AutoSave"),
+                out _disposeProperties);
 
             _searchEngine = new(
                 ItemManagementReferences.GetAListOfAllItems,
@@ -111,6 +114,7 @@ namespace Holylib.ItemEditor
 
         private void OnDisable()
         {
+            _disposeProperties?.Invoke();
             ShortcutManager.UnregisterContext(s_ShortcutContext);
         }
 

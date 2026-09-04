@@ -204,6 +204,11 @@ namespace Holylib.ItemEditor
             Sprite iconSprite = AssetDatabase.LoadAssetAtPath<Sprite>(assetPath);
             _onIconCaptured?.Invoke(iconSprite);
         }
+
+        public void UpdateModel(out GameObject spawnedModel)
+        {
+            spawnedModel = _modelInstance;
+        }
         public void Dispose()
         {
             if (_renderTexture != null)

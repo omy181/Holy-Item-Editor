@@ -66,6 +66,11 @@ namespace Holylib.ItemEditor
             _modelPreviewer.SaveIcon();
         }
 
+        public void UpdateModel(out GameObject spawnedModel)
+        {
+            _modelPreviewer.UpdateModel(out spawnedModel);
+        }
+
         private void _nothingToShowView(VisualElement root)
         {
             Label nothingToPreviewLabel = new("Nothing to preview");

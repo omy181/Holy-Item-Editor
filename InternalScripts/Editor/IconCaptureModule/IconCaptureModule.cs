@@ -17,7 +17,7 @@ namespace Holylib.ItemEditor
         private ModelPreviewer _modelPreviewer;
         private Action _updateControls;
 
-        public IconCaptureModule(VisualElement root, GameObject itemModel, ItemCaptureSettings settings, Action<Sprite> onIconCaptured, string captureIconPath,out Action disposeUI,bool hideUpdateSpriteButton = false)
+        public IconCaptureModule(VisualElement root, GameObject itemModel,string itemName,ItemCaptureSettings settings, Action<Sprite> onIconCaptured, string captureIconPath,out Action disposeUI,bool hideUpdateSpriteButton = false)
         {
             if(itemModel == null)
             {
@@ -33,7 +33,7 @@ namespace Holylib.ItemEditor
 
                 _instantiateUI(root);
                 _makeUIElementConnections(root, out Image previewImage, hideUpdateSpriteButton);
-                _modelPreviewer = new(previewImage, itemModel, _settings, IconTextureSize, _captureIconPath, _onIconCaptured, _updateControls);
+                _modelPreviewer = new(previewImage, itemModel,itemName, _settings, IconTextureSize, _captureIconPath, _onIconCaptured, _updateControls);
 
                 disposeUI = _modelPreviewer.Dispose;
             }

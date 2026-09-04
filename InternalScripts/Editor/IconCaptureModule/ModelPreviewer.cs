@@ -31,16 +31,18 @@ namespace Holylib.ItemEditor
         private string _captureIconPath;
         private Action<Sprite> _onIconCaptured;
         private ModelPreviewerTouchController _touchController;
+        private string _itemName;
 
-        public ModelPreviewer(Image image,GameObject itemModel, ItemCaptureSettings settings,int iconTextureSize,string captureIconPath, Action<Sprite> onIconCaptured,Action updateControlsUI)
+        public ModelPreviewer(Image image,GameObject itemModel, string itemName, ItemCaptureSettings settings,int iconTextureSize,string captureIconPath, Action<Sprite> onIconCaptured,Action updateControlsUI)
         {
             _previewImage = image;
             _settings = settings;
             IconTextureSize = iconTextureSize;
             _onIconCaptured = onIconCaptured;
             _captureIconPath = captureIconPath;
+            _itemName = itemName;
 
-            if(itemModel != null)
+            if (itemModel != null)
             {
                 _cameraModelSetup(itemModel);
             }
@@ -181,7 +183,7 @@ namespace Holylib.ItemEditor
 
             Directory.CreateDirectory(directory);
 
-            string fileName = $"{_modelInstance.name}.png";
+            string fileName = $"{_itemName}.png";
             string fullPath = Path.Combine(directory, fileName);
 
             string assetPath = $"{_captureIconPath}/{fileName}";
